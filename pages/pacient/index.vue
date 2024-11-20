@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { NButton, NDropdown, NFlex, NIcon, NText } from 'naive-ui'
-import { IconDots, IconFileExcel, IconFileZip, IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
-import { format, toDate } from 'date-fns'
-import { changeColor } from 'seemly'
+import { NButton, NFlex, NText } from 'naive-ui'
+import { IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
+import { format } from 'date-fns'
 import { definePageMeta } from '#imports'
 import { AppLink } from '#components'
 
@@ -85,10 +84,6 @@ const rowOptions = ref([
   },
 ])
 
-// function handleSelectedRowOption(key, option, row) {
-//   console.log(row)
-// }
-
 const columns = ref([
   {
     title: 'ID',
@@ -101,11 +96,11 @@ const columns = ref([
     width: 80,
     render(row) {
       return h(
-          NText,
-          {},
-          {
-            default: () => row.receipt_at
-          }
+        NText,
+        {},
+        {
+          default: () => format(new Date(row.receipt_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
@@ -190,8 +185,8 @@ async function searchPacient() {
 }
 
 function rowProps(row: RowData) {
-  //if (row.certificate.has_valid === false) { return { style: `background-color: ${changeColor(useThemeVars().value.errorColor, { alpha: 0.35 })} !important;` } }
-  //if (row.certificate.has_request_new === true) { return { style: `background-color: ${changeColor(useThemeVars().value.warningColor, { alpha: 0.35 })} !important;` } }
+  // if (row.certificate.has_valid === false) { return { style: `background-color: ${changeColor(useThemeVars().value.errorColor, { alpha: 0.35 })} !important;` } }
+  // if (row.certificate.has_request_new === true) { return { style: `background-color: ${changeColor(useThemeVars().value.warningColor, { alpha: 0.35 })} !important;` } }
   return { }
 }
 
@@ -246,10 +241,9 @@ definePageMeta({
 
     <NSpace vertical>
       <NSpace vertical>
-        <NFlex justify="space-between" align="center">
-        </NFlex>
+        <NFlex justify="space-between" align="center" />
         <n-input-group>
-          <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Значение поиска" @keydown.enter.prevent="searchPacient" />
+          <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
           <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
             <template #icon>
               <IconSearch />

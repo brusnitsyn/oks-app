@@ -80,5 +80,7 @@ export default defineNuxtConfig({
 
   typescript: {
     shim: false
-  }
+  },
+
+  compatibilityDate: '2024-11-20'
 })

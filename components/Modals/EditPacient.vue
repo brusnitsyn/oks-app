@@ -20,12 +20,29 @@ rules.value = {
   ],
   snils: [
     {
-      required: false,
+      required: true,
+      message: 'СНИЛС обязателен!',
+      trigger: ['blur', 'input']
+    },
+    {
+      min: 11,
+      message: 'Номер СНИЛС должен содержать 11 цифр!',
+      trigger: ['blur', 'input']
+    },
+  ],
+  tel: [
+    {
+      required: true,
+      message: 'Номер телефона обязателен!',
+      trigger: ['blur', 'input']
     },
   ],
   birth_at: [
     {
-      required: false,
+      type: 'number',
+      required: true,
+      message: 'Дата рождения обязательна!',
+      trigger: ['blur', 'change']
     }
   ],
   receipt_at: [
@@ -48,7 +65,25 @@ rules.value = {
       message: 'ЛПУ обязательно!',
       trigger: ['blur', 'change']
     }
-  ]
+  ],
+  disp: {
+    main_diagnos_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Основной диагноз обязателен!',
+        trigger: ['blur', 'change']
+      }
+    ],
+    disp_state_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Статус обязателен!',
+        trigger: ['blur', 'change']
+      }
+    ],
+  },
 }
 
 function handleSubmit() {
@@ -73,10 +108,10 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[600px]" title="Редактирование пациента">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Редактирование пациента">
     <NTabs type="segment">
-      <NTabPane name="info" tab="Персональная информация">
-        <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+      <NTabPane display-directive="show" name="info" tab="Персональная информация">
+        <NForm ref="formRef" :disabled="useSanctumAuth().isOperator" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi label="ЛПУ" path="lpu_id">
               <SelectLpu
@@ -92,7 +127,15 @@ function handleClose() {
             <NFormItemGi label="СНИЛС" path="snils">
               <NInput
                 v-model:value="model.snils"
+                show-count
+                maxlength="11"
                 placeholder="18165141866"
+              />
+            </NFormItemGi>
+            <NFormItemGi label="Номер телефона" path="tel">
+              <NInput
+                v-model:value="model.tel"
+                placeholder="79145992969"
               />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
@@ -107,7 +150,7 @@ function handleClose() {
             <NFormItemGi label="Дата поступления" path="receipt_at">
               <NDatePicker
                 v-model:value="model.receipt_at"
-                disabled
+                :disabled="!useSanctumAuth().isAdmin"
                 placeholder="10.11.2024"
                 format="dd.MM.yyyy"
                 type="date"
@@ -126,26 +169,23 @@ function handleClose() {
           </NGrid>
         </NForm>
       </NTabPane>
-      <NTabPane name="disp" tab="Диспансерное наблюдение">
+      <NTabPane display-directive="show" name="disp" tab="Диспансерное наблюдение">
         <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
           <NGrid cols="2" x-gap="8">
-            <NFormItemGi label="Основной диагноз" path="main_diagnos_id">
+            <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
               <SelectDiagnosMain
                 v-model:value="model.disp.main_diagnos_id"
+                :disabled="!useSanctumAuth().isAdmin"
               />
             </NFormItemGi>
-            <NFormItemGi label="Сопутствующий диагноз" path="second_diagnos_id">
-              <SelectDiagnosMain
-                v-model:value="model.disp.second_diagnos_id"
+            <NFormItemGi span="2" label="Сопутствующий диагноз" path="disp.conco_diagnos_id">
+              <SelectDiagnosConco
+                v-model:value="model.disp.conco_diagnos_id"
+                :disabled="!useSanctumAuth().isAdmin"
               />
             </NFormItemGi>
-            <NFormItemGi span="2" label="Осложнения" path="complications">
-              <NInput
-                v-model:value="model.disp.complications"
-                :autosize="{ minRows: 6, maxRows: 6 }"
-                type="textarea"
-                placeholder=""
-              />
+            <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
+              <SelectDiagnosComplication v-model:value="model.disp.complications_id" :disabled="!useSanctumAuth().isAdmin" />
             </NFormItemGi>
             <NFormItemGi label="Статус" path="disp.disp_state_id">
               <SelectDispStatus
@@ -153,17 +193,17 @@ function handleClose() {
               />
             </NFormItemGi>
             <NFormItemGi />
-            <NFormItemGi label="Дата поступления" path="disp.begin_at">
+            <NFormItemGi label="Дата поступления на учет" path="disp.begin_at">
               <NDatePicker
                 v-model:value="model.disp.begin_at"
-                disabled
+                :disabled="!useSanctumAuth().isAdmin"
                 placeholder="11.11.2024"
                 format="dd.MM.yyyy"
                 type="date"
                 class="w-full"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата снятия" path="disp.end_at">
+            <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
               <NDatePicker
                 v-model:value="model.disp.end_at"
                 placeholder="11.11.2024"

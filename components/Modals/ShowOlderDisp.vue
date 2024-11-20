@@ -1,8 +1,12 @@
 <script setup lang="ts">
-const emits = defineEmits('createdIntegrate')
+import { format } from 'date-fns'
+const props = defineProps(['pacientId'])
+
+const { data: pacient } = await useAPI(`/api/pacient/${props.pacientId}/edit`)
+
 const show = defineModel('show')
 const model = ref({
-  disp: {}
+  ...pacient.value.data
 })
 
 const { pending, rules, reset, onSubmit, edited, apiErrors, formRef } = useNaiveForm(model)
@@ -81,7 +85,6 @@ rules.value = {
       }
     ],
   },
-
 }
 
 function handleSubmit() {
@@ -99,6 +102,8 @@ function handleSubmit() {
   })
 }
 
+const auth = useSanctumAuth()
+
 function handleClose() {
   show.value = false
   reset()
@@ -106,10 +111,10 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Добавление пациента">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" :title="`(${format(new Date(model.disp.begin_at), 'dd.MM.yyyy')} - ${format(new Date(model.disp.end_at), 'dd.MM.yyyy')}) Диспансерное наблюдение`">
     <NTabs type="segment">
       <NTabPane display-directive="show" name="info" tab="Персональная информация">
-        <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+        <NForm ref="formRef" :disabled="!auth.isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi label="ЛПУ" path="lpu_id">
               <SelectLpu
@@ -148,26 +153,27 @@ function handleClose() {
             <NFormItemGi label="Дата поступления" path="receipt_at">
               <NDatePicker
                 v-model:value="model.receipt_at"
+                disabled
                 placeholder="10.11.2024"
                 format="dd.MM.yyyy"
                 type="date"
                 class="w-full"
               />
             </NFormItemGi>
-            <!--            <NFormItemGi label="Дата выписки" path="birth_at"> -->
-            <!--              <NDatePicker -->
-            <!--                v-model:value="model.birth_at" -->
-            <!--                placeholder="28.12.2024" -->
-            <!--                format="dd.MM.yyyy" -->
-            <!--                type="date" -->
-            <!--                class="w-full" -->
-            <!--              /> -->
-            <!--            </NFormItemGi> -->
+            <NFormItemGi label="Дата выписки" path="discharge_at">
+              <NDatePicker
+                v-model:value="model.discharge_at"
+                placeholder="28.12.2024"
+                format="dd.MM.yyyy"
+                type="date"
+                class="w-full"
+              />
+            </NFormItemGi>
           </NGrid>
         </NForm>
       </NTabPane>
       <NTabPane display-directive="show" name="disp" tab="Диспансерное наблюдение">
-        <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+        <NForm ref="formRef" :disabled="!auth.isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
               <SelectDiagnosMain
@@ -179,41 +185,51 @@ function handleClose() {
                 v-model:value="model.disp.conco_diagnos_id"
               />
             </NFormItemGi>
-            <NFormItemGi span="2" label="Осложнения" path="disp.complications">
-              <SelectDiagnosComplication v-model:value="model.disp.complications" :disabled="!useSanctumAuth().isAdmin" />
+            <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
+              <SelectDiagnosComplication v-model:value="model.disp.complications_id" :disabled="!useSanctumAuth().isAdmin" />
             </NFormItemGi>
             <NFormItemGi label="Статус" path="disp.disp_state_id">
               <SelectDispStatus
                 v-model:value="model.disp.disp_state_id"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата поступления" path="disp.begin_at">
+            <NFormItemGi />
+            <NFormItemGi label="Дата поступления на учет" path="disp.begin_at">
               <NDatePicker
                 v-model:value="model.disp.begin_at"
+                disabled
                 placeholder="11.11.2024"
                 format="dd.MM.yyyy"
                 type="date"
                 class="w-full"
               />
             </NFormItemGi>
-            <NFormItemGi label="Лекарственные препараты" path="disp.lek_pr_state_id">
-              <SelectLekPrState v-model:value="model.disp.lek_pr_state_id" />
-            </NFormItemGi>
-            <NFormItemGi label="Необходимость дополнительного лечения" path="disp.disp_dop_health_id">
-              <SelectDispDopHeal v-model:value="model.disp.disp_dop_health_id" />
+            <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
+              <NDatePicker
+                v-model:value="model.disp.end_at"
+                placeholder="11.11.2024"
+                format="dd.MM.yyyy"
+                type="date"
+                class="w-full"
+              />
             </NFormItemGi>
           </NGrid>
         </NForm>
       </NTabPane>
+      <NTabPane display-directive="show" name="cp" tab="Контрольные точки">
+        <NList>
+
+        </NList>
+      </NTabPane>
     </NTabs>
 
-    <template #action>
+    <template v-if="auth.isAdmin" #action>
       <NFlex justify="space-between" align="center">
         <NButton secondary @click="handleClose">
           Отмена
         </NButton>
         <NButton type="primary" :loading="pending" :disabled="pending || !edited" attr-type="submit" @click="handleSubmit">
-          Добавить пациента
+          Обновить пациента
         </NButton>
       </NFlex>
     </template>

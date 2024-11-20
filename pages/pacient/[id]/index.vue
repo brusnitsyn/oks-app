@@ -8,9 +8,12 @@ import { NIcon } from 'naive-ui'
 
 const config = useRuntimeConfig()
 const message = useMessage()
+const auth = useSanctumAuth()
 const { $api } = useNuxtApp()
 
 const id = Number.parseInt(useRoute().params.id as string)
+
+await useAsyncData('control-point', () => $api('/api/control-point'))
 
 // const userModel = await $client.getUser.useQuery({ id })
 
@@ -19,6 +22,7 @@ const { data: pacient, refresh } = await useAsyncData(`pacient-id`, () => $api(`
 const formatDate = 'dd.MM.yyyy'
 
 const disableForm = ref(false)
+const showOlderDisp = ref(false)
 
 const model = ref({
   ...pacient.value
@@ -143,6 +147,14 @@ definePageMeta({
                 </NGi>
               </NGrid>
             </NListItem>
+            <NListItem>
+              <NGrid :cols="2">
+                <NGi><NText>Номер телефона</NText></NGi>
+                <NGi v-if="pacient.data.tel">
+                  <NText>{{ pacient.data.tel }}</NText>
+                </NGi>
+              </NGrid>
+            </NListItem>
             <!--            <NListItem>
               <template v-if="staff.job_title" #suffix>
                 <AppCopyButton :value="staff.job_title" />
@@ -192,16 +204,22 @@ definePageMeta({
                 </NGi>
               </NGrid>
             </NListItem>
-            <template v-for="diagnos in pacient.data.disp.diagnoses">
-              <NListItem>
-                <NGrid :cols="2">
-                  <NGi><NText>{{ diagnos.type }} диагноз</NText></NGi>
-                  <NGi>
-                    <NText>{{ diagnos.name }}</NText>
-                  </NGi>
-                </NGrid>
-              </NListItem>
-            </template>
+            <NListItem>
+              <NGrid :cols="2">
+                <NGi><NText>Основной диагноз</NText></NGi>
+                <NGi>
+                  <NText>{{ pacient.data.disp.main_diagnos.name }}</NText>
+                </NGi>
+              </NGrid>
+            </NListItem>
+            <NListItem>
+              <NGrid :cols="2">
+                <NGi><NText>Сопутствующий диагноз</NText></NGi>
+                <NGi>
+                  <NText>{{ pacient.data.disp.conco_diagnos.name }}</NText>
+                </NGi>
+              </NGrid>
+            </NListItem>
             <!--            <NListItem> -->
             <!--              <NGrid :cols="2"> -->
             <!--                <NGi><NText>{{ pacient.data.disp. }} диагноз</NText></NGi> -->
@@ -220,13 +238,18 @@ definePageMeta({
           <NList v-if="pacient.data.disps && pacient.data.disps.length">
             <NScrollbar class="max-h-[360px] px-4">
               <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
-                <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`">
-                  <template #header-extra>
-                    <NButton size="small">
-                      Подробнее
-                    </NButton>
+                <NTooltip>
+                  {{ disp.main_diagnos.name }}
+                  <template #trigger>
+                    <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`">
+                      <template #header-extra>
+                        <NButton secondary size="small" @click="showOlderDisp = true">
+                          Подробнее
+                        </NButton>
+                      </template>
+                    </NThing>
                   </template>
-                </NThing>
+                </NTooltip>
               </NListItem>
             </NScrollbar>
           </NList>
@@ -276,7 +299,7 @@ definePageMeta({
         <!--          &lt;!&ndash;                  </template> &ndash;&gt; -->
         <!--          &lt;!&ndash;                </NEmpty> &ndash;&gt; -->
         <!--        </NCard> -->
-        <NCard title="Контрольные точки">
+        <NCard v-if="auth.isAdmin || auth.isOperator" title="Контрольные точки">
           <!--          <template #header-extra> -->
           <!--            <NButton text @click="showAddControlPoint = true"> -->
           <!--              <template #icon> -->
@@ -295,7 +318,7 @@ definePageMeta({
                     </NText>
                   </NGi>
                   <NGi>
-                    <SelectControlPointOption v-model="control_point.control_point_option_id" :disabled="control_point.control_point_option_id" @change="value => updateControlPoint(control_point.id, value)" />
+                    <LazySelectControlPointOption v-model="control_point.control_point_option_id" :disabled="control_point.control_point_option_id" @change="value => updateControlPoint(control_point.id, value)" />
                   </NGi>
                 </NGrid>
               </NListItem>
@@ -307,6 +330,7 @@ definePageMeta({
   </NGrid>
 
   <ModalsEditPacient v-model:show="showEdit" :pacient-id="pacient.data.id" />
+  <ModalsShowOlderDisp v-model:show="showOlderDisp" :pacient-id="pacient.data.id" />
 
 <!--  <ModalsAddStaffIntegrate v-model:show="showAddStaffIntegrate" :staff-id="staff.id" @created-integrate="(value) => staff.integrations.push(value)" />
   <ModalsEditStaffIntegrate v-model:show="showEditStaffIntegrate" v-model:model="editIntegrate" :staff-id="staff.id" @updated-integrate="(value) => updateIntegrate(value)" />
