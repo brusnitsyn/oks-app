@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         },
         redirect: {
           keepRequestedRoute: false,
-          onLogin: '/certificates',
+          onLogin: '/pacient',
           onLogout: '/',
           onAuthOnly: '/auth',
           onGuestOnly: '/',

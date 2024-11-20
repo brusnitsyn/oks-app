@@ -4,11 +4,11 @@ import { dateRuRU, ruRU } from 'naive-ui'
 const defaultLang = ruRU
 const defaultLangDate = dateRuRU
 
-const themeConfig = ref({
-  shared: {
-    fontFamily: ['Golos Text']
-  }
-})
+// const themeConfig = ref({
+//   shared: {
+//     fontFamily: ['Golos Text']
+//   }
+// })
 </script>
 
 <template>
@@ -31,9 +31,3 @@ const themeConfig = ref({
     </Body>
   </Html>
 </template>
-
-<style>
-body {
-  font-family: "Golos Text", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
-}
-</style>

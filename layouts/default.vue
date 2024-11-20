@@ -23,12 +23,6 @@ const activeRoute = computed(() => {
     return route.path
 })
 
-function renderIcon(icon: Component) {
-  return h(NIcon, null, { default: () => h(icon) })
-}
-
-const collapsed = ref(true)
-
 function renderMenuLabel(option: MenuOption) {
   if ('href' in option) {
     return h('a', { href: option.href, target: '_blank' }, [
@@ -55,11 +49,11 @@ function expandIcon() {
 
 const menuOptions = [
   {
-    label: 'Персонал',
-    key: '/persons',
+    label: 'Пациенты',
+    key: '/pacient',
     icon: IconUsers,
     to: {
-      name: 'persons'
+      name: 'pacient'
     }
   },
   // {
@@ -70,64 +64,8 @@ const menuOptions = [
   //     name: 'certificates'
   //   }
   // },
-  {
-    label: 'Кадры',
-    key: '/cadrs',
-    icon: IconUsersGroup,
-    to: {
-      name: 'cadrs'
-    }
-  },
-  {
-    label: 'Журналы',
-    key: '/journals',
-    icon: IconBook,
-    children: [
-      {
-        label: 'Отчет по пролежням',
-        key: '/journals/rob',
-        icon: IconNotes
-      },
-      {
-        label: 'Вакансии',
-        key: '/journals/vacan',
-        icon: IconBriefcase
-      },
-      {
-        label: 'Журнал регистрации падений пациентов и посетителей',
-        key: '/journals/pacient-falls',
-        icon: IconNotes,
-        to: {
-          name: 'journals-pacient-falls'
-        }
-      },
-      {
-        label: 'Реестр рисков',
-        key: '/journals/riskreg',
-        icon: IconNotes
-      },
-      {
-        label: 'Хирургия Осложнения',
-        key: '/journals/surcom',
-        icon: IconNotes
-      },
-      {
-        label: 'Учет нежелательных событий в регистратуре поликлиники ',
-        key: '/journals/events',
-        icon: IconNotes
-      }
-    ]
-  },
-  {
-    label: 'Подразделения',
-    key: '/divisions',
-    icon: IconAffiliate,
-    to: {
-      name: 'divisions'
-    }
-  }
 ]
-
+console.log(user.value)
 function renderUserInfo() {
   return h(
     'div',
@@ -138,10 +76,10 @@ function renderUserInfo() {
       h(NAvatar, {
         round: true,
         class: 'mr-3',
-      }, { default: () => user.value.name[0] }),
+      }, { default: () => user.value.data.fio }),
       h('div', null, [
         h('div', null, [
-          h(NText, { depth: 0 }, { default: () => user.value.name })
+          h(NText, { depth: 0 }, { default: () => user.value.fio })
         ]),
         h('div', null, [
           h(NText, { depth: 3 }, { default: () => user.value.login })
@@ -185,14 +123,14 @@ const userOptions = [
                 <template #default>
                   <NFlex align="center" class="!-ml-16">
                     <NAvatar :size="48" circle>
-                      {{ user.name[0] }}
+                      {{ user.data.fio[0] }}
                     </NAvatar>
                     <NFlex vertical justify="center" :size="2">
                       <NText class="text-start font-semibold">
-                        {{ user.name }}
+                        {{ user.data.fio }}
                       </NText>
                       <NText class="text-start">
-                        {{ user.login }}
+                        {{ user.data.login }}
                       </NText>
                     </NFlex>
                   </NFlex>

@@ -1,17 +1,9 @@
 <script lang="ts" setup>
 import {
-  IconAlertCircleFilled,
   IconChevronLeft,
-  IconCopy,
-  IconDatabaseImport,
   IconEdit,
-  IconExternalLink,
-  IconFileZip,
-  IconProgressCheck,
-  IconSquareRoundedPlus,
-  IconTrash
 } from '@tabler/icons-vue'
-import { format, toDate } from 'date-fns'
+import { format } from 'date-fns'
 import { NIcon } from 'naive-ui'
 
 const config = useRuntimeConfig()
@@ -22,21 +14,14 @@ const id = Number.parseInt(useRoute().params.id as string)
 
 // const userModel = await $client.getUser.useQuery({ id })
 
-const { data: staff, refresh } = await useAsyncData(`staff-id`, () => $api(`/api/staff/${id}`))
-
-const { data: divisions } = await useAsyncData('divisions', () => $api(`/api/division`))
-
-const formatedDivisions = divisions.value.divisions.map(item => ({
-  ...item,
-  value: item.id
-}))
+const { data: pacient, refresh } = await useAsyncData(`pacient-id`, () => $api(`/api/pacient/${id}`))
 
 const formatDate = 'dd.MM.yyyy'
 
 const disableForm = ref(false)
 
 const model = ref({
-  ...staff.value
+  ...pacient.value
 })
 
 async function customRequest({
@@ -73,74 +58,19 @@ async function onSubmit() {
   }
 }
 
-const hasAlerNewRequest = ref(false)
-const hasAlerNoValid = ref(false)
-const hasAlerValid = ref(false)
-
-if (staff.value.cert.has_valid && !staff.value.cert.has_request_new) {
-  hasAlerValid.value = true
-}
-else if (!staff.value.cert.has_valid && !staff.value.cert.has_request_new) {
-  hasAlerNoValid.value = true
-}
-else if (staff.value.cert.has_valid && staff.value.cert.has_request_new) {
-  hasAlerNewRequest.value = true
-}
-
-const showAddStaffIntegrate = ref(false)
-const showEditStaffIntegrate = ref(false)
+const showAddControlPoint = ref(false)
 const showEdit = ref(false)
 
-async function removeIntegrate(staffId: number, integrateId: number) {
-  const { status } = await useAPI(`/api/staff/${staffId}/integrate/${integrateId}`, {
-    method: 'DELETE',
-  })
-
-  if (status.value === 'success') {
-    const sliceIntegrationId = staff.value.integrations.findIndex(item => item.id === integrateId)
-    staff.value.integrations.splice(sliceIntegrationId, 1)
-  }
-}
-
-async function installCert() {
-  const { status } = await useAPI(`/api/staff/${staff.value.id}/mis/set`)
-  if (status.value === 'success') { await refresh() }
-}
-
-const editIntegrate = ref(null)
-
-function handleEdit(integrate) {
-  editIntegrate.value = integrate
-  showEditStaffIntegrate.value = true
-}
-
-function updateIntegrate(value) {
-  const updatedIntegration = staff.value.integrations.find(item => item.id === value.id)
-  updatedIntegration.value = value
-}
-
-function copyIntegratedValue(value) {
-  navigator.clipboard.writeText(value)
-  message.success('Значение скопировано в буфер обмена', {
-    icon: () => h(NIcon, null, { default: () => h(IconCopy) })
-  })
-}
-
-async function syncMis() {
-  const { status } = await useAPI(`/api/staff/${staff.value.id}/sync`)
-}
-
-async function downloadCert() {
-  const { data: downloadData, status: downloadStatus } = await useAPI('/api/certificate/download', {
-    method: 'POST',
+async function updateControlPoint(control_point_id, value) {
+  const { status } = await useAPI(`/api/control-point/${control_point_id}`, {
+    method: 'PUT',
     body: {
-      staff_ids: [staff.value.id]
+      control_point_option_id: value
     }
   })
 
-  if (downloadStatus.value === 'success') {
-    const file = window.URL.createObjectURL(downloadData.value)
-    window.location.assign(file)
+  if (status === 'success') {
+    await refresh()
   }
 }
 
@@ -155,12 +85,12 @@ definePageMeta({
       <NSpace vertical class="max-w-3xl">
         <NCard class="relative">
           <NFlex class="absolute top-4 right-4">
-            <NTag v-if="staff.mis_user_id != null" type="info" round>
-              ТМ:МИС {{ format(new Date(staff.mis_sync_at), 'dd.MM.yyyy') }} в {{ format(new Date(staff.mis_sync_at), 'HH:mm') }}
-              <template #icon>
-                <NIcon :component="IconProgressCheck" :size="20" />
-              </template>
-            </NTag>
+            <!--            <NTag v-if="staff.mis_user_id != null" type="info" round> -->
+            <!--              Запись {{ format(new Date(staff.mis_sync_at), 'dd.MM.yyyy') }} в {{ format(new Date(pacient.data.receipt_at), 'HH:mm') }} -->
+            <!--              <template #icon> -->
+            <!--                <NIcon :component="IconProgressCheck" :size="20" /> -->
+            <!--              </template> -->
+            <!--            </NTag> -->
           </NFlex>
           <NButton class="absolute top-2 left-0 -translate-x-1/2" :style="{ border: '1px', borderColor: useThemeVars().value.borderColor, borderStyle: 'solid' }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="useRouter().back()">
             <template #icon>
@@ -168,54 +98,52 @@ definePageMeta({
             </template>
           </NButton>
           <NAvatar round :size="120" class="font-bold text-3xl">
-            {{ staff.last_name[0] }}{{ staff.first_name[0] }}
+            {{ pacient.data.fio[0] }}
           </NAvatar>
           <template #action>
             <NFlex justify="space-between" align="center">
               <NText class="text-lg font-bold">
-                {{ staff.full_name }}
+                {{ pacient.data.fio }}
               </NText>
 
-              <NText v-if="staff.mis_user_id">
-                #{{ staff.mis_user_id }}
+              <NText>
+                #{{ pacient.data.id }}
               </NText>
             </NFlex>
           </template>
         </NCard>
 
-        <NAlert v-if="hasAlerValid" title="Сертификат действителен" type="success" />
-        <NAlert v-if="hasAlerNewRequest" title="Срок действия сертификата подходит к концу" type="warning" />
-        <NAlert v-if="hasAlerNoValid" title="Сертификат не действителен" type="error" />
+        <!--        <NAlert v-if="hasAlerValid" title="Сертификат действителен" type="success" /> -->
+        <!--        <NAlert v-if="hasAlerNewRequest" title="Срок действия сертификата подходит к концу" type="warning" /> -->
+        <!--        <NAlert v-if="hasAlerNoValid" title="Сертификат не действителен" type="error" /> -->
 
-        <NCard title="Общая информация">
-          <!--          <template #header-extra> -->
-          <!--            <NButton text @click="showEdit = true"> -->
-          <!--              <template #icon> -->
-          <!--                <IconEdit /> -->
-          <!--              </template> -->
-          <!--              Изменить -->
-          <!--            </NButton> -->
-          <!--          </template> -->
+        <NCard title="Персональная информация">
+          <template #header-extra>
+            <NButton text @click="showEdit = true">
+              <template #icon>
+                <IconEdit />
+              </template>
+              Изменить
+            </NButton>
+          </template>
           <NList hoverable>
             <NListItem>
-              <template v-if="staff.inn" #suffix>
-                <AppCopyButton :value="staff.inn" />
-              </template>
-              <NGrid :cols="2">
-                <NGi><NText>ИНН</NText></NGi>
-                <NGi><NText>{{ staff.inn }}</NText></NGi>
-              </NGrid>
-            </NListItem>
-            <NListItem>
-              <template v-if="staff.snils" #suffix>
-                <AppCopyButton :value="staff.snils" />
-              </template>
               <NGrid :cols="2">
                 <NGi><NText>СНИЛС</NText></NGi>
-                <NGi><NText>{{ staff.snils }}</NText></NGi>
+                <NGi v-if="pacient.data.snils">
+                  <NText>{{ pacient.data.snils }}</NText>
+                </NGi>
               </NGrid>
             </NListItem>
             <NListItem>
+              <NGrid :cols="2">
+                <NGi><NText>Дата рождения</NText></NGi>
+                <NGi v-if="pacient.data.birth_at">
+                  <NText>{{ format(new Date(pacient.data.birth_at), 'dd.MM.yyyy') }}</NText>
+                </NGi>
+              </NGrid>
+            </NListItem>
+            <!--            <NListItem>
               <template v-if="staff.job_title" #suffix>
                 <AppCopyButton :value="staff.job_title" />
               </template>
@@ -232,141 +160,155 @@ definePageMeta({
                 <NGi><NText>Подразделение</NText></NGi>
                 <NGi><NText>{{ staff.division }}</NText></NGi>
               </NGrid>
-            </NListItem>
+            </NListItem> -->
           </NList>
         </NCard>
 
-        <NCard title="Сведения о сертификате">
-          <template #header-extra>
-            <NSpace>
-              <NButton text @click="downloadCert">
-                <template #icon>
-                  <IconFileZip />
-                </template>
-                Скачать
-              </NButton>
-              <NButton v-if="staff.cert.has_mis_identical === false && staff.mis_user_id != null" text @click="installCert">
-                <template #icon>
-                  <IconDatabaseImport />
-                </template>
-                Установить в ТМ:МИС
-              </NButton>
-            </NSpace>
-          </template>
+        <NCard title="Текущее диспансерное наблюдение">
           <NList hoverable>
             <NListItem>
-              <template #suffix>
-                <AppCopyButton :value="staff.cert.serial_number" />
-              </template>
-              <NGrid :cols="2" class="flex items-center">
+              <NGrid :cols="2">
+                <NGi><NText>Дата поступления</NText></NGi>
                 <NGi>
-                  <NText class="font-bold">
-                    {{ staff.cert.serial_number }}
+                  <NText v-if="pacient.data.disp.begin_at">
+                    {{ format(new Date(pacient.data.disp.begin_at), 'dd.MM.yyyy') }}
+                  </NText>
+                  <NText v-else>
+                    —
                   </NText>
                 </NGi>
-                <NGi v-if="staff.cert.has_mis_identical === false && staff.mis_user_id != null">
-                  <NTag type="warning" round class="-ml-6">
-                    <div class="!text-sm">
-                      Сертификат отличается
-                    </div>
-                    <template #icon>
-                      <NIcon :component="IconAlertCircleFilled" :size="20" />
-                    </template>
-                  </NTag>
-                </NGi>
               </NGrid>
             </NListItem>
             <NListItem>
               <NGrid :cols="2">
-                <NGi><NText>Действителен с</NText></NGi>
-                <NGi><NText>{{ format(toDate(staff.cert.valid_from), 'dd.MM.yyyy') }}</NText></NGi>
-              </NGrid>
-            </NListItem>
-            <NListItem>
-              <NGrid :cols="2">
-                <NGi><NText>Действителен по</NText></NGi>
-                <NGi><NText>{{ format(toDate(staff.cert.valid_to), 'dd.MM.yyyy') }}</NText></NGi>
-              </NGrid>
-            </NListItem>
-            <NListItem>
-              <NGrid :cols="2">
-                <NGi><NText>Срок действия закрытого ключа</NText></NGi>
+                <NGi><NText>Дата выписки</NText></NGi>
                 <NGi>
-                  <NText class="blur select-none">
-                    00.00.0000
+                  <NText v-if="pacient.data.disp.end_at">
+                    {{ format(new Date(pacient.data.disp.end_at), 'dd.MM.yyyy') }}
                   </NText>
-
-                  <NTag round :bordered="false" class="ml-4">
-                    <div class="!text-sm">
-                      Совсем скоро
-                    </div>
-                  </NTag>
+                  <NText v-else>
+                    —
+                  </NText>
                 </NGi>
               </NGrid>
             </NListItem>
+            <template v-for="diagnos in pacient.data.disp.diagnoses">
+              <NListItem>
+                <NGrid :cols="2">
+                  <NGi><NText>{{ diagnos.type }} диагноз</NText></NGi>
+                  <NGi>
+                    <NText>{{ diagnos.name }}</NText>
+                  </NGi>
+                </NGrid>
+              </NListItem>
+            </template>
+            <!--            <NListItem> -->
+            <!--              <NGrid :cols="2"> -->
+            <!--                <NGi><NText>{{ pacient.data.disp. }} диагноз</NText></NGi> -->
+            <!--                <NGi> -->
+            <!--                  <NText>{{ diagnos.name }}</NText> -->
+            <!--                </NGi> -->
+            <!--              </NGrid> -->
+            <!--            </NListItem> -->
           </NList>
         </NCard>
       </NSpace>
     </NGi>
     <NGi span="2">
-      <NCard title="Учетные записи">
-        <template #header-extra>
-          <NButton text @click="showAddStaffIntegrate = true">
-            <template #icon>
-              <IconSquareRoundedPlus />
-            </template>
-            Добавить
-          </NButton>
-        </template>
-        <NList v-if="staff.integrations && staff.integrations.length">
-          <NScrollbar class="max-h-[360px] px-4">
-            <NListItem v-for="integrate in staff.integrations" :key="integrate.id">
-              <NThing :title="integrate.name" content-style="margin-top: 10px;">
-                <template #header-extra>
-                  <NSpace>
-                    <NButton v-if="integrate.link" text tag="a" :href="integrate.link" target="_blank">
-                      <template #icon>
-                        <NIcon :size="20" :component="IconExternalLink" />
-                      </template>
+      <NSpace vertical>
+        <NCard title="Диспансерные наблюдения">
+          <NList v-if="pacient.data.disps && pacient.data.disps.length">
+            <NScrollbar class="max-h-[360px] px-4">
+              <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
+                <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`">
+                  <template #header-extra>
+                    <NButton size="small">
+                      Подробнее
                     </NButton>
-                    <NButton text @click="handleEdit(integrate)">
-                      <template #icon>
-                        <NIcon :size="20" :component="IconEdit" />
-                      </template>
-                    </NButton>
-                    <NButton text type="error" @click="removeIntegrate(staff.id, integrate.id)">
-                      <template #icon>
-                        <NIcon :size="20" :component="IconTrash" />
-                      </template>
-                    </NButton>
-                  </NSpace>
-                </template>
-                <template #action>
-                  <NSpace size="small">
-                    <NButton v-if="integrate.login" size="small" secondary @click="copyIntegratedValue(integrate.login)">
-                      Логин
-                    </NButton>
-                    <NButton v-if="integrate.password" size="small" secondary @click="copyIntegratedValue(integrate.password)">
-                      Пароль
-                    </NButton>
-                  </NSpace>
-                </template>
-              </NThing>
-            </NListItem>
-          </NScrollbar>
-        </NList>
-        <NEmpty v-else description="Учетные записи не найдены" class="py-4 pb-8">
-          <template #extra>
-            <NButton secondary size="small" @click="showAddStaffIntegrate = true">
-              Добавить новую запись
-            </NButton>
-          </template>
-        </NEmpty>
-      </NCard>
+                  </template>
+                </NThing>
+              </NListItem>
+            </NScrollbar>
+          </NList>
+        </NCard>
+        <!--          &lt;!&ndash;                <NList v-if="staff.integrations && staff.integrations.length"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                  <NScrollbar class="max-h-[360px] px-4"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                    <NListItem v-for="integrate in staff.integrations" :key="integrate.id"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                      <NThing :title="integrate.name" content-style="margin-top: 10px;"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                        <template #header-extra> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                          <NSpace> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            <NButton v-if="integrate.link" text tag="a" :href="integrate.link" target="_blank"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconExternalLink" /> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            <NButton text @click="handleEdit(integrate)"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconEdit" /> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            <NButton text type="error" @click="removeIntegrate(staff.id, integrate.id)"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconTrash" /> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                          </NSpace> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                        </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                        <template #action> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                          <NSpace size="small"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            <NButton v-if="integrate.login" size="small" secondary @click="copyIntegratedValue(integrate.login)"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              Логин &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            <NButton v-if="integrate.password" size="small" secondary @click="copyIntegratedValue(integrate.password)"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                              Пароль &ndash;&gt; -->
+        <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                          </NSpace> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                        </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                      </NThing> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                    </NListItem> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                  </NScrollbar> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                </NList> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                <NEmpty v-else description="Учетные записи не найдены" class="py-4 pb-8"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                  <template #extra> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                    <NButton secondary size="small" @click="showAddStaffIntegrate = true"> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                      Добавить новую запись &ndash;&gt; -->
+        <!--          &lt;!&ndash;                    </NButton> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                  </template> &ndash;&gt; -->
+        <!--          &lt;!&ndash;                </NEmpty> &ndash;&gt; -->
+        <!--        </NCard> -->
+        <NCard title="Контрольные точки">
+          <!--          <template #header-extra> -->
+          <!--            <NButton text @click="showAddControlPoint = true"> -->
+          <!--              <template #icon> -->
+          <!--                <IconSquareRoundedPlus /> -->
+          <!--              </template> -->
+          <!--              Добавить -->
+          <!--            </NButton> -->
+          <!--          </template> -->
+          <NList>
+            <NScrollbar class="px-4">
+              <NListItem v-for="control_point in pacient.data.disp.control_points" :key="control_point.id">
+                <NGrid cols="2">
+                  <NGi>
+                    <NText class="font-bold">
+                      {{ control_point.point }}
+                    </NText>
+                  </NGi>
+                  <NGi>
+                    <SelectControlPointOption v-model="control_point.control_point_option_id" :disabled="control_point.control_point_option_id" @change="value => updateControlPoint(control_point.id, value)" />
+                  </NGi>
+                </NGrid>
+              </NListItem>
+            </NScrollbar>
+          </NList>
+        </NCard>
+      </NSpace>
     </NGi>
   </NGrid>
 
-  <ModalsAddStaffIntegrate v-model:show="showAddStaffIntegrate" :staff-id="staff.id" @created-integrate="(value) => staff.integrations.push(value)" />
+  <ModalsEditPacient v-model:show="showEdit" :pacient-id="pacient.data.id" />
+
+<!--  <ModalsAddStaffIntegrate v-model:show="showAddStaffIntegrate" :staff-id="staff.id" @created-integrate="(value) => staff.integrations.push(value)" />
   <ModalsEditStaffIntegrate v-model:show="showEditStaffIntegrate" v-model:model="editIntegrate" :staff-id="staff.id" @updated-integrate="(value) => updateIntegrate(value)" />
-  <ModalsEditStaff v-model:show="showEdit" v-model:model="staff" />
+  <ModalsEditStaff v-model:show="showEdit" v-model:model="staff" /> -->
 </template>
