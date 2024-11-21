@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const emits = defineEmits('createdIntegrate')
+const props = defineProps(['refresh'])
 const show = defineModel('show')
 const model = ref({
   disp: {}
@@ -94,6 +95,8 @@ function handleSubmit() {
 
       if (status.value === 'success') {
         show.value = false
+        const id = data.value.id
+        navigateTo({ name: 'pacient-id', params: { id } })
       }
     }
   })

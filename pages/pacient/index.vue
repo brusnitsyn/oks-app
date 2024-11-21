@@ -91,6 +91,7 @@ const columns = ref([
     width: 30,
   },
   {
+    hidden: true,
     title: 'Дата поступления',
     key: 'receipt_at',
     width: 80,
@@ -121,6 +122,27 @@ const columns = ref([
         }
       )
     }
+  },
+  {
+    hidden: true,
+    title: 'Дата рождения',
+    key: 'birth_at',
+    width: 80,
+    render(row) {
+      return h(
+        NText,
+        {},
+        {
+          default: () => format(new Date(row.birth_at), 'dd.MM.yyyy')
+        }
+      )
+    }
+  },
+  {
+    hidden: true,
+    title: 'Диагноз',
+    key: 'ds',
+    width: 80,
   },
   // {
   //   title: 'СНИЛС',
@@ -227,7 +249,7 @@ definePageMeta({
   <div>
     <div class="flex flex-row justify-between items-center pb-5">
       <h1 class="text-2xl font-bold">
-        Пациенты
+        Регистр ИБС и ОКС
       </h1>
       <NSpace>
         <NButton type="primary" @click="openDialog">

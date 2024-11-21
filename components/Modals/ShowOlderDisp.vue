@@ -216,11 +216,14 @@ function handleClose() {
           </NGrid>
         </NForm>
       </NTabPane>
-      <NTabPane display-directive="show" name="cp" tab="Контрольные точки">
-        <NList>
-
-        </NList>
-      </NTabPane>
+<!--      <NTabPane display-directive="show" name="cp" tab="Контрольные точки">-->
+<!--        <NList>-->
+<!--          <NListItem v-for="cp in model.disp.control_points">-->
+<!--            {{ cp.control_point.point }}-->
+<!--            {{ cp.calls }}-->
+<!--          </NListItem>-->
+<!--        </NList>-->
+<!--      </NTabPane>-->
     </NTabs>
 
     <template v-if="auth.isAdmin" #action>

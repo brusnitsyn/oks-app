@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { h } from 'vue'
 import { NAvatar, NIcon, NText } from 'naive-ui'
 import {
-  IconAffiliate,
-  IconBook,
-  IconBriefcase,
-  IconUsers,
   IconChevronDown,
   IconLogout,
-  IconNotes,
-  IconUsersGroup
+  IconUsers
 } from '@tabler/icons-vue'
 import { NuxtLink } from '#components'
 
@@ -17,10 +12,8 @@ const { user } = useSanctumAuth()
 const route = useRoute()
 
 const activeRoute = computed(() => {
-  if (route.path.indexOf('/', 1) != -1)
-    return route.path.substring(route.path.indexOf('/'), route.path.indexOf('/', 1))
-  else
-    return route.path
+  if (route.path.includes('/', 1)) { return route.path.substring(route.path.indexOf('/'), route.path.indexOf('/', 1)) }
+  else { return route.path }
 })
 
 function renderMenuLabel(option: MenuOption) {
@@ -65,14 +58,14 @@ const menuOptions = [
   //   }
   // },
 ]
-console.log(user.value)
+
 function renderUserInfo() {
   return h(
     'div',
     {
       class: 'flex items-center py-1 px-4'
     },
-    [
+    () => [
       h(NAvatar, {
         round: true,
         class: 'mr-3',
@@ -147,9 +140,9 @@ const userOptions = [
               :default-value="activeRoute"
             />
           </NSpace>
-          <NSpace vertical class="p-8">
-            <NaiveColorModeSwitch :text="false" secondary icon-light="tabler:sun" icon-dark="tabler:moon" icon-system="tabler:device-desktop" />
-          </NSpace>
+<!--          <NSpace vertical class="p-8">-->
+<!--            <NaiveColorModeSwitch :text="false" secondary icon-light="tabler:sun" icon-dark="tabler:moon" icon-system="tabler:device-desktop" />-->
+<!--          </NSpace>-->
         </NFlex>
       </NLayoutSider>
       <div class="container max-w-7xl mx-auto pt-8 max-h-screen">
