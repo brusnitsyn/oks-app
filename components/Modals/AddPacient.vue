@@ -183,7 +183,7 @@ function handleClose() {
               />
             </NFormItemGi>
             <NFormItemGi span="2" label="Осложнения" path="disp.complications">
-              <SelectDiagnosComplication v-model:value="model.disp.complications" :disabled="!useSanctumAuth().isAdmin" />
+              <SelectDiagnosComplication v-model:value="model.disp.complications" />
             </NFormItemGi>
             <NFormItemGi label="Статус" path="disp.disp_state_id">
               <SelectDispStatus

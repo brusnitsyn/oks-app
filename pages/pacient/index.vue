@@ -240,6 +240,8 @@ async function downloadExcel() {
   status.value = downloadStatus.value
 }
 
+const auth = useSanctumAuth()
+
 definePageMeta({
   middleware: 'sanctum-auth'
 })
@@ -252,7 +254,7 @@ definePageMeta({
         Регистр ИБС и ОКС
       </h1>
       <NSpace>
-        <NButton type="primary" @click="openDialog">
+        <NButton v-if="auth.isAdmin || auth.isDoctor" type="primary" @click="openDialog">
           <template #icon>
             <IconSquareRoundedPlus />
           </template>

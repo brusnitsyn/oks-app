@@ -22,7 +22,6 @@ const { data: pacient, refresh } = await useAsyncData(`pacient-id`, () => $api(`
 const formatDate = 'dd.MM.yyyy'
 
 const disableForm = ref(false)
-const showOlderDisp = ref(false)
 
 const model = ref({
   ...pacient.value
@@ -84,6 +83,15 @@ function showControlPointCall(control_point_id) {
   controlPointId.value = control_point_id
   showControlPoint.value = true
 }
+
+const olderDisp = ref(false)
+const dispId = ref(null)
+function showOlderDisp(dispid) {
+  dispId.value = dispid
+  olderDisp.value = true
+}
+
+const showAddDisp = ref(false)
 
 definePageMeta({
   middleware: 'sanctum-auth'
@@ -184,7 +192,7 @@ definePageMeta({
             </NList>
           </NCard>
 
-          <NCard title="Текущее диспансерное наблюдение">
+          <NCard v-if="pacient.data.disp != null" title="Текущее диспансерное наблюдение">
             <NList hoverable>
               <NListItem>
                 <NGrid :cols="2">
@@ -192,19 +200,6 @@ definePageMeta({
                   <NGi>
                     <NText v-if="pacient.data.disp.begin_at">
                       {{ format(new Date(pacient.data.disp.begin_at), 'dd.MM.yyyy') }}
-                    </NText>
-                    <NText v-else>
-                      —
-                    </NText>
-                  </NGi>
-                </NGrid>
-              </NListItem>
-              <NListItem>
-                <NGrid :cols="2">
-                  <NGi><NText>Дата выписки</NText></NGi>
-                  <NGi>
-                    <NText v-if="pacient.data.disp.end_at">
-                      {{ format(new Date(pacient.data.disp.end_at), 'dd.MM.yyyy') }}
                     </NText>
                     <NText v-else>
                       —
@@ -224,18 +219,18 @@ definePageMeta({
                 <NGrid :cols="2">
                   <NGi><NText>Сопутствующий диагноз</NText></NGi>
                   <NGi>
+                    <NText>{{ pacient.data.disp.complications.name }}</NText>
+                  </NGi>
+                </NGrid>
+              </NListItem>
+              <NListItem>
+                <NGrid :cols="2">
+                  <NGi><NText>Осложнения</NText></NGi>
+                  <NGi>
                     <NText>{{ pacient.data.disp.conco_diagnos.name }}</NText>
                   </NGi>
                 </NGrid>
               </NListItem>
-              <!--            <NListItem> -->
-              <!--              <NGrid :cols="2"> -->
-              <!--                <NGi><NText>{{ pacient.data.disp. }} диагноз</NText></NGi> -->
-              <!--                <NGi> -->
-              <!--                  <NText>{{ diagnos.name }}</NText> -->
-              <!--                </NGi> -->
-              <!--              </NGrid> -->
-              <!--            </NListItem> -->
             </NList>
           </NCard>
         </NSpace>
@@ -243,15 +238,23 @@ definePageMeta({
       <NGi span="2">
         <NSpace vertical>
           <NCard title="Диспансерные наблюдения">
+            <template #header-extra>
+              <NButton text @click="showAddDisp = true">
+                <template #icon>
+                  <IconSquareRoundedPlus />
+                </template>
+                Добавить
+              </NButton>
+            </template>
             <NList v-if="pacient.data.disps && pacient.data.disps.length">
-              <NScrollbar class="max-h-[360px] px-4">
+              <NScrollbar class="max-h-[360px]">
                 <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
                   <NTooltip>
                     {{ disp.main_diagnos.name }}
                     <template #trigger>
-                      <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`">
+                      <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`" class="px-4">
                         <template #header-extra>
-                          <NButton secondary size="small" @click="showOlderDisp = true">
+                          <NButton secondary size="small" @click="showOlderDisp(disp.id)">
                             Подробнее
                           </NButton>
                         </template>
@@ -262,52 +265,7 @@ definePageMeta({
               </NScrollbar>
             </NList>
           </NCard>
-          <!--          &lt;!&ndash;                <NList v-if="staff.integrations && staff.integrations.length"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                  <NScrollbar class="max-h-[360px] px-4"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                    <NListItem v-for="integrate in staff.integrations" :key="integrate.id"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                      <NThing :title="integrate.name" content-style="margin-top: 10px;"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                        <template #header-extra> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                          <NSpace> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            <NButton v-if="integrate.link" text tag="a" :href="integrate.link" target="_blank"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconExternalLink" /> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            <NButton text @click="handleEdit(integrate)"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconEdit" /> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            <NButton text type="error" @click="removeIntegrate(staff.id, integrate.id)"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              <template #icon> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                                <NIcon :size="20" :component="IconTrash" /> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                          </NSpace> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                        </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                        <template #action> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                          <NSpace size="small"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            <NButton v-if="integrate.login" size="small" secondary @click="copyIntegratedValue(integrate.login)"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              Логин &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            <NButton v-if="integrate.password" size="small" secondary @click="copyIntegratedValue(integrate.password)"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                              Пароль &ndash;&gt; -->
-          <!--          &lt;!&ndash;                            </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                          </NSpace> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                        </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                      </NThing> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                    </NListItem> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                  </NScrollbar> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                </NList> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                <NEmpty v-else description="Учетные записи не найдены" class="py-4 pb-8"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                  <template #extra> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                    <NButton secondary size="small" @click="showAddStaffIntegrate = true"> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                      Добавить новую запись &ndash;&gt; -->
-          <!--          &lt;!&ndash;                    </NButton> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                  </template> &ndash;&gt; -->
-          <!--          &lt;!&ndash;                </NEmpty> &ndash;&gt; -->
-          <!--        </NCard> -->
-          <NCard v-if="auth.isAdmin || auth.isOperator" title="Контрольные точки">
+          <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки">
             <!--          <template #header-extra> -->
             <!--            <NButton text @click="showAddControlPoint = true"> -->
             <!--              <template #icon> -->
@@ -343,8 +301,11 @@ definePageMeta({
       </NGi>
     </NGrid>
 
-    <LazyModalsEditPacient v-model:show="showEdit" :pacient-id="pacient.data.id" />
-    <LazyModalsShowOlderDisp v-model:show="showOlderDisp" :pacient-id="pacient.data.id" />
+    <ModalsCreateDisp v-model:show="showAddDisp" :pacient-id="pacient.data.id" :refresh="refresh" />
+    <LazyModalsEditPacient v-model:show="showEdit" :pacient-id="pacient.data.id" :refresh="refresh" />
+    <template v-if="olderDisp">
+      <ModalsShowOlderDisp v-model:show="olderDisp" v-model:disp-id="dispId" />
+    </template>
     <template v-if="showControlPoint">
       <ModalsControlPointCall v-model:show="showControlPoint" v-model:control-point-id="controlPointId" :refresh="refresh" />
     </template>

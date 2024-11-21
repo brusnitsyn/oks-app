@@ -1,103 +1,60 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 
-const dispId = defineModel('dispId')
-
-const { data: pacient } = await useAPI(`/api/disp/${dispId.value}`)
+const props = defineProps(['pacientId', 'refresh'])
 
 const show = defineModel('show')
-const model = ref({
-  ...pacient.value.data
-})
+const model = ref({})
 
 const { pending, rules, reset, onSubmit, edited, apiErrors, formRef } = useNaiveForm(model)
 
 rules.value = {
-  fio: [
-    {
-      required: true,
-      message: 'ФИО обязательно!',
-      trigger: ['blur', 'input']
-    }
-  ],
-  snils: [
-    {
-      required: true,
-      message: 'СНИЛС обязателен!',
-      trigger: ['blur', 'input']
-    },
-    {
-      min: 11,
-      message: 'Номер СНИЛС должен содержать 11 цифр!',
-      trigger: ['blur', 'input']
-    },
-  ],
-  tel: [
-    {
-      required: true,
-      message: 'Номер телефона обязателен!',
-      trigger: ['blur', 'input']
-    },
-  ],
-  birth_at: [
+  main_diagnos_id: [
     {
       type: 'number',
       required: true,
-      message: 'Дата рождения обязательна!',
+      message: 'Основной диагноз обязателен!',
       trigger: ['blur', 'change']
     }
   ],
-  receipt_at: [
+  disp_state_id: [
     {
       type: 'number',
       required: true,
-      message: 'Дата поступления обязательна!',
+      message: 'Статус обязателен!',
       trigger: ['blur', 'change']
     }
   ],
-  discharge_at: [
-    {
-      required: false,
-    }
-  ],
-  lpu_id: [
+  lek_pr_state_id: [
     {
       type: 'number',
       required: true,
-      message: 'ЛПУ обязательно!',
+      message: 'Поле обязателено!',
       trigger: ['blur', 'change']
     }
   ],
-  disp: {
-    main_diagnos_id: [
-      {
-        type: 'number',
-        required: true,
-        message: 'Основной диагноз обязателен!',
-        trigger: ['blur', 'change']
-      }
-    ],
-    disp_state_id: [
-      {
-        type: 'number',
-        required: true,
-        message: 'Статус обязателен!',
-        trigger: ['blur', 'change']
-      }
-    ],
-  },
+  disp_dop_health_id: [
+    {
+      type: 'number',
+      required: true,
+      message: 'Поле обязателено!',
+      trigger: ['blur', 'change']
+    }
+  ],
 }
 
 function handleSubmit() {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      const { data, status } = await useAPI(`/api/pacient`, {
+      const { data, status } = await useAPI(`/api/pacient/${props.pacientId}/disp`, {
         method: 'POST',
         body: model.value,
       })
 
       if (status.value === 'success') {
         show.value = false
+        props.refresh()
+        reset()
       }
     }
   })
@@ -112,8 +69,8 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" :title="`(${format(new Date(model.begin_at), 'dd.MM.yyyy')} - ${format(new Date(model.end_at), 'dd.MM.yyyy')}) Диспансерное наблюдение`">
-    <NForm ref="formRef" :disabled="!auth.isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Добавить диспансерное наблюдение">
+    <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
       <NGrid cols="2" x-gap="8">
         <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
           <SelectDiagnosMain
@@ -126,7 +83,7 @@ function handleClose() {
           />
         </NFormItemGi>
         <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
-          <SelectDiagnosComplication v-model:value="model.complications_id" :disabled="!useSanctumAuth().isAdmin" />
+          <SelectDiagnosComplication v-model:value="model.complications_id" />
         </NFormItemGi>
         <NFormItemGi label="Статус" path="disp.disp_state_id">
           <SelectDispStatus
@@ -143,14 +100,11 @@ function handleClose() {
             class="w-full"
           />
         </NFormItemGi>
-        <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
-          <NDatePicker
-            v-model:value="model.end_at"
-            placeholder="11.11.2024"
-            format="dd.MM.yyyy"
-            type="date"
-            class="w-full"
-          />
+        <NFormItemGi label="Лекарственные препараты" path="lek_pr_state_id">
+          <SelectLekPrState v-model:value="model.lek_pr_state_id" />
+        </NFormItemGi>
+        <NFormItemGi label="Необходимость дополнительного лечения" path="disp_dop_health_id">
+          <SelectDispDopHeal v-model:value="model.disp_dop_health_id" />
         </NFormItemGi>
       </NGrid>
     </NForm>
@@ -161,7 +115,7 @@ function handleClose() {
           Отмена
         </NButton>
         <NButton type="primary" :loading="pending" :disabled="pending || !edited" attr-type="submit" @click="handleSubmit">
-          Обновить пациента
+          Добавить наблюдение
         </NButton>
       </NFlex>
     </template>
