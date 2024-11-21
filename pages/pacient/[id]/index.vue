@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {
   IconChevronLeft,
+  IconSquareRoundedPlus,
   IconEdit,
 } from '@tabler/icons-vue'
 import { format } from 'date-fns'
