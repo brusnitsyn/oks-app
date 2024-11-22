@@ -106,7 +106,7 @@ const userOptions = [
       <NLayoutSider
         collapse-mode="width"
         :collapsed-width="64"
-        :width="280"
+        :width="260"
         content-class="flex flex-col"
       >
         <NFlex vertical justify="space-between" class="h-full">
@@ -145,7 +145,7 @@ const userOptions = [
 <!--          </NSpace>-->
         </NFlex>
       </NLayoutSider>
-      <div class="container max-w-7xl mx-auto pt-8 max-h-screen">
+      <div class="w-full mx-2 mr-4 pt-8 max-h-screen">
         <slot />
       </div>
     </NLayout>

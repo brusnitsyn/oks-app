@@ -100,20 +100,14 @@ definePageMeta({
 </script>
 
 <template>
-  <div>
+  <div class="max-w-7xl mx-auto px-4">
     <NGrid :cols="5" :x-gap="16">
       <NGi span="3">
-        <NSpace vertical class="max-w-3xl">
-          <NCard class="relative">
+        <NSpace vertical class="max-w-3xl" :size="16">
+          <NCard class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
             <NFlex class="absolute top-4 right-4">
-              <!--            <NTag v-if="staff.mis_user_id != null" type="info" round> -->
-              <!--              Запись {{ format(new Date(staff.mis_sync_at), 'dd.MM.yyyy') }} в {{ format(new Date(pacient.data.receipt_at), 'HH:mm') }} -->
-              <!--              <template #icon> -->
-              <!--                <NIcon :component="IconProgressCheck" :size="20" /> -->
-              <!--              </template> -->
-              <!--            </NTag> -->
             </NFlex>
-            <NButton class="absolute top-2 left-0 -translate-x-1/2" :style="{ border: '1px', borderColor: useThemeVars().value.borderColor, borderStyle: 'solid' }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="useRouter().back()">
+            <NButton class="absolute top-2 left-0 -translate-x-1/2 shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="useRouter().back()">
               <template #icon>
                 <NIcon :component="IconChevronLeft" />
               </template>
@@ -134,11 +128,7 @@ definePageMeta({
             </template>
           </NCard>
 
-          <!--        <NAlert v-if="hasAlerValid" title="Сертификат действителен" type="success" /> -->
-          <!--        <NAlert v-if="hasAlerNewRequest" title="Срок действия сертификата подходит к концу" type="warning" /> -->
-          <!--        <NAlert v-if="hasAlerNoValid" title="Сертификат не действителен" type="error" /> -->
-
-          <NCard title="Персональная информация">
+          <NCard title="Персональная информация" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
             <template #header-extra>
               <NButton text @click="showEdit = true">
                 <template #icon>
@@ -172,28 +162,10 @@ definePageMeta({
                   </NGi>
                 </NGrid>
               </NListItem>
-              <!--            <NListItem>
-                <template v-if="staff.job_title" #suffix>
-                  <AppCopyButton :value="staff.job_title" />
-                </template>
-                <NGrid :cols="2">
-                  <NGi><NText>Должность</NText></NGi>
-                  <NGi><NEllipsis>{{ staff.job_title }}</NEllipsis></NGi>
-                </NGrid>
-              </NListItem>
-              <NListItem>
-                <template v-if="staff.division" #suffix>
-                  <AppCopyButton :value="staff.division" />
-                </template>
-                <NGrid :cols="2">
-                  <NGi><NText>Подразделение</NText></NGi>
-                  <NGi><NText>{{ staff.division }}</NText></NGi>
-                </NGrid>
-              </NListItem> -->
             </NList>
           </NCard>
 
-          <NCard v-if="pacient.data.disp != null" title="Текущее диспансерное наблюдение">
+          <NCard v-if="pacient.data.disp != null" title="Текущее диспансерное наблюдение" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
             <NList hoverable>
               <NListItem>
                 <NGrid :cols="2">
@@ -220,7 +192,11 @@ definePageMeta({
                 <NGrid :cols="2">
                   <NGi><NText>Сопутствующий диагноз</NText></NGi>
                   <NGi>
-                    <NText>{{ pacient.data.disp.complications.name }}</NText>
+                    <NSpace vertical :size="0">
+                      <template v-for="conco in pacient.data.disp.conco_diagnos">
+                        <NText>{{ conco.name }}</NText>
+                      </template>
+                    </NSpace>
                   </NGi>
                 </NGrid>
               </NListItem>
@@ -228,7 +204,11 @@ definePageMeta({
                 <NGrid :cols="2">
                   <NGi><NText>Осложнения</NText></NGi>
                   <NGi>
-                    <NText>{{ pacient.data.disp.conco_diagnos.name }}</NText>
+                    <NSpace vertical :size="0">
+                      <template v-for="comp in pacient.data.disp.complications">
+                        <NText>{{ comp.name }}</NText>
+                      </template>
+                    </NSpace>
                   </NGi>
                 </NGrid>
               </NListItem>
@@ -237,8 +217,8 @@ definePageMeta({
         </NSpace>
       </NGi>
       <NGi span="2">
-        <NSpace vertical>
-          <NCard title="Диспансерные наблюдения">
+        <NSpace vertical :size="16">
+          <NCard title="Диспансерные наблюдения" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
             <template #header-extra>
               <NButton text @click="showAddDisp = true">
                 <template #icon>
@@ -266,15 +246,7 @@ definePageMeta({
               </NScrollbar>
             </NList>
           </NCard>
-          <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки">
-            <!--          <template #header-extra> -->
-            <!--            <NButton text @click="showAddControlPoint = true"> -->
-            <!--              <template #icon> -->
-            <!--                <IconSquareRoundedPlus /> -->
-            <!--              </template> -->
-            <!--              Добавить -->
-            <!--            </NButton> -->
-            <!--          </template> -->
+          <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
             <NList>
               <NScrollbar>
                 <NListItem v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.call != null ? '#7FE7C4' : ''}`">
@@ -284,7 +256,7 @@ definePageMeta({
                         {{ cp.control_point.point }}
                       </NText>
                     </NGridItem>
-                    <NGridItem align="end">
+                    <NGridItem class="flex items-center justify-end" align="end">
                       <NButton v-if="(cp.call == null || useSanctumAuth().isAdmin)" text @click="showControlPointCall(cp.control_point.id)">
                         <template #icon>
                           <IconEdit />
@@ -305,10 +277,10 @@ definePageMeta({
     <ModalsCreateDisp v-model:show="showAddDisp" :pacient-id="pacient.data.id" :refresh="refresh" />
     <LazyModalsEditPacient v-model:show="showEdit" :pacient-id="pacient.data.id" :refresh="refresh" />
     <template v-if="olderDisp">
-      <ModalsShowOlderDisp v-model:show="olderDisp" v-model:disp-id="dispId" />
+      <ModalsShowOlderDisp v-model:show="olderDisp" v-model:disp-id="dispId" :refresh="refresh" />
     </template>
     <template v-if="showControlPoint">
-      <ModalsControlPointCall v-model:show="showControlPoint" v-model:control-point-id="controlPointId" :refresh="refresh" />
+      <ModalsControlPointCall v-model:show="showControlPoint" :control-point-id="controlPointId" :refresh="refresh" />
     </template>
   </div>
 <!--  <ModalsAddStaffIntegrate v-model:show="showAddStaffIntegrate" :staff-id="staff.id" @created-integrate="(value) => staff.integrations.push(value)" />

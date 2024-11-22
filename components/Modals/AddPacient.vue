@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const emits = defineEmits('createdIntegrate')
 const props = defineProps(['refresh'])
+const emits = defineEmits('createdIntegrate')
 const show = defineModel('show')
 const model = ref({
   disp: {}
@@ -23,13 +23,14 @@ rules.value = {
       trigger: ['blur', 'input']
     },
     {
-      min: 11,
+      min: 14,
       message: 'Номер СНИЛС должен содержать 11 цифр!',
       trigger: ['blur', 'input']
     },
   ],
   tel: [
     {
+      min: 18,
       required: true,
       message: 'Номер телефона обязателен!',
       trigger: ['blur', 'input']
@@ -126,18 +127,10 @@ function handleClose() {
               />
             </NFormItemGi>
             <NFormItemGi label="СНИЛС" path="snils">
-              <NInput
-                v-model:value="model.snils"
-                show-count
-                maxlength="11"
-                placeholder="18165141866"
-              />
+              <InputSnils v-model:value="model.snils" />
             </NFormItemGi>
             <NFormItemGi label="Номер телефона" path="tel">
-              <NInput
-                v-model:value="model.tel"
-                placeholder="79145992969"
-              />
+              <InputTel v-model:value="model.tel" />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
               <NDatePicker
@@ -157,15 +150,15 @@ function handleClose() {
                 class="w-full"
               />
             </NFormItemGi>
-            <!--            <NFormItemGi label="Дата выписки" path="birth_at"> -->
-            <!--              <NDatePicker -->
-            <!--                v-model:value="model.birth_at" -->
-            <!--                placeholder="28.12.2024" -->
-            <!--                format="dd.MM.yyyy" -->
-            <!--                type="date" -->
-            <!--                class="w-full" -->
-            <!--              /> -->
-            <!--            </NFormItemGi> -->
+            <NFormItemGi label="Дата выписки" path="discharge_at">
+              <NDatePicker
+                v-model:value="model.discharge_at"
+                placeholder="28.12.2024"
+                format="dd.MM.yyyy"
+                type="date"
+                class="w-full"
+              />
+            </NFormItemGi>
           </NGrid>
         </NForm>
       </NTabPane>
@@ -190,7 +183,12 @@ function handleClose() {
                 v-model:value="model.disp.disp_state_id"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата поступления" path="disp.begin_at">
+            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина снятия" path="disp.disp_reason_close_id">
+              <SelectReasonClose
+                v-model:value="model.disp.disp_reason_close_id"
+              />
+            </NFormItemGi>
+            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата поступления" path="disp.begin_at">
               <NDatePicker
                 v-model:value="model.disp.begin_at"
                 placeholder="11.11.2024"

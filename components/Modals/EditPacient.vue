@@ -125,18 +125,10 @@ function handleClose() {
               />
             </NFormItemGi>
             <NFormItemGi label="СНИЛС" path="snils">
-              <NInput
-                v-model:value="model.snils"
-                show-count
-                maxlength="11"
-                placeholder="18165141866"
-              />
+              <InputSnils v-model:value="model.snils" />
             </NFormItemGi>
             <NFormItemGi label="Номер телефона" path="tel">
-              <NInput
-                v-model:value="model.tel"
-                placeholder="79145992969"
-              />
+              <InputTel v-model:value="model.tel" />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
               <NDatePicker
@@ -157,15 +149,15 @@ function handleClose() {
                 class="w-full"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата выписки" path="discharge_at">
-              <NDatePicker
-                v-model:value="model.discharge_at"
-                placeholder="28.12.2024"
-                format="dd.MM.yyyy"
-                type="date"
-                class="w-full"
-              />
-            </NFormItemGi>
+            <!--            <NFormItemGi label="Дата выписки" path="discharge_at"> -->
+            <!--              <NDatePicker -->
+            <!--                v-model:value="model.discharge_at" -->
+            <!--                placeholder="28.12.2024" -->
+            <!--                format="dd.MM.yyyy" -->
+            <!--                type="date" -->
+            <!--                class="w-full" -->
+            <!--              /> -->
+            <!--            </NFormItemGi> -->
           </NGrid>
         </NForm>
       </NTabPane>
@@ -192,7 +184,11 @@ function handleClose() {
                 v-model:value="model.disp.disp_state_id"
               />
             </NFormItemGi>
-            <NFormItemGi />
+            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина снятия" path="disp.disp_reason_close_id">
+              <SelectReasonClose
+                v-model:value="model.disp.disp_reason_close_id"
+              />
+            </NFormItemGi>
             <NFormItemGi label="Дата поступления на учет" path="disp.begin_at">
               <NDatePicker
                 v-model:value="model.disp.begin_at"

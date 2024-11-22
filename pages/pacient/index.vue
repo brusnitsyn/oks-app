@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NFlex, NText } from 'naive-ui'
+import { NButton, NFlex, NSpace, NText } from 'naive-ui'
 import { IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
 import { format } from 'date-fns'
 import { definePageMeta } from '#imports'
@@ -84,17 +84,42 @@ const rowOptions = ref([
   },
 ])
 
+function getClassForRowCallResult(result_call_id) {
+  switch (result_call_id) {
+    case 1:
+      return 'bg-green-500'
+    case 2:
+    case 3:
+      return 'bg-transparent'
+  }
+}
+
+function getClassForRowControlOption(control_point_option_id) {
+  switch (control_point_option_id) {
+    case 2:
+    case 3:
+      return 'border-green-500'
+    case 4:
+      return 'border-yellow-500'
+    case 5:
+    case 6:
+      return 'border-red-500'
+    case 1:
+      return 'border-black'
+  }
+}
+
 const columns = ref([
   {
     title: 'ID',
     key: 'id',
-    width: 30,
+    width: 40,
+    fixed: 'left'
   },
   {
-    hidden: true,
     title: 'Дата поступления',
     key: 'receipt_at',
-    width: 80,
+    width: 120,
     render(row) {
       return h(
         NText,
@@ -108,9 +133,10 @@ const columns = ref([
   {
     title: 'ФИО',
     key: 'fio',
-    width: 280,
     sorter: 'default',
     sortOrder: false,
+    width: 280,
+    fixed: 'left',
     render(row) {
       return h(
         AppLink,
@@ -124,10 +150,8 @@ const columns = ref([
     }
   },
   {
-    hidden: true,
     title: 'Дата рождения',
     key: 'birth_at',
-    width: 80,
     render(row) {
       return h(
         NText,
@@ -139,18 +163,90 @@ const columns = ref([
     }
   },
   {
-    hidden: true,
     title: 'Диагноз',
-    key: 'ds',
     width: 80,
+    key: 'ds',
   },
-  // {
-  //   title: 'СНИЛС',
-  //   key: 'snils',
-  //   width: 120,
-  //   sorter: 'default',
-  //   sortOrder: false,
-  // },
+  {
+    title: 'Диспансерное\nнаблюдение',
+    width: 120,
+    key: 'disp_status',
+  },
+  {
+    title: 'Лекарственные\nпрепараты',
+    width: 130,
+    key: 'lek_pr_status',
+  },
+  {
+    title: 'Дополнительное\nлечение',
+    width: 140,
+    key: 'dop_heal',
+  },
+  {
+    title: '3-й день',
+    key: 'day3',
+    render(row) {
+      return h(
+        'div',
+        {
+          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
+        },
+      )
+    }
+  },
+  {
+    title: '1 мес',
+    key: 'mes1',
+    render(row) {
+      return h(
+        'div',
+        {
+          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
+        },
+      )
+    }
+  },
+  {
+    title: '3 мес',
+    key: 'mes3',
+    render(row) {
+      return h(
+        'div',
+        {
+          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
+        },
+      )
+    }
+  },
+  {
+    title: '6 мес',
+    key: 'mes6',
+    render(row) {
+      return h(
+        'div',
+        {
+          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
+        },
+      )
+    }
+  },
+  {
+    title: '12 мес',
+    key: 'mes12',
+    render(row) {
+      return h(
+        'div',
+        {
+          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
+        },
+      )
+    }
+  },
+  {
+    title: 'Номер телефона',
+    width: 150,
+    key: 'tel',
+  },
 ])
 
 function handleSorterChange(sorter) {
@@ -264,7 +360,7 @@ definePageMeta({
     </div>
 
     <NSpace vertical>
-      <NSpace vertical>
+      <NSpace vertical class="max-w-[520px]">
         <NFlex justify="space-between" align="center" />
         <n-input-group>
           <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
@@ -285,7 +381,8 @@ definePageMeta({
         :min-height="650"
         :max-height="650"
         :columns="columns" :data="(data as responseData).data.pacients"
-        :bordered="true" @update:sorter="handleSorterChange"
+        :bordered="true"
+        @update:sorter="handleSorterChange"
         @update:checked-row-keys="handleCheck"
       />
     </NSpace>
@@ -294,7 +391,10 @@ definePageMeta({
 </template>
 
 <style scoped>
-:deep(.n-data-table-tr td) {
-  @apply !bg-transparent;
+:deep(.n-data-table-th__title) {
+ @apply leading-[18px];
+}
+:deep(.n-data-table-tr) {
+  @apply leading-[18px];
 }
 </style>
