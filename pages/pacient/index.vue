@@ -360,16 +360,20 @@ definePageMeta({
     </div>
 
     <NSpace vertical>
-      <NSpace vertical class="max-w-[520px]">
-        <NFlex justify="space-between" align="center" />
-        <n-input-group>
-          <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
-          <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
-            <template #icon>
-              <IconSearch />
-            </template>
-          </NButton>
-        </n-input-group>
+      <NSpace vertical>
+        <NFlex justify="space-between" />
+        <NFlex justify="space-between" align="center">
+          <n-input-group class="max-w-[520px]">
+            <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
+            <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
+              <template #icon>
+                <IconSearch />
+              </template>
+            </NButton>
+          </n-input-group>
+
+          
+        </NFlex>
       </NSpace>
 
       <n-data-table
