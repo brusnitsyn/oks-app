@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps(['pacientId'])
+const props = defineProps(['pacientId', 'refresh'])
 
 const { data: pacient } = await useAPI(`/api/pacient/${props.pacientId}/edit`)
 
@@ -96,6 +96,8 @@ function handleSubmit() {
 
       if (status.value === 'success') {
         show.value = false
+        props.refresh()
+        reset()
       }
     }
   })
@@ -161,7 +163,7 @@ function handleClose() {
           </NGrid>
         </NForm>
       </NTabPane>
-      <NTabPane display-directive="show" name="disp" tab="Диспансерное наблюдение">
+      <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Диспансерное наблюдение">
         <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
@@ -195,11 +197,11 @@ function handleClose() {
                 :disabled="!useSanctumAuth().isAdmin"
                 placeholder="11.11.2024"
                 format="dd.MM.yyyy"
-                type="date"
+                type="datetime"
                 class="w-full"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
+            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата снятия с учета" path="disp.end_at">
               <NDatePicker
                 v-model:value="model.disp.end_at"
                 placeholder="11.11.2024"

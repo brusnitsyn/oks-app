@@ -2,10 +2,13 @@
 import { IconArrowLeft } from '@tabler/icons-vue'
 
 const router = useRouter()
+async function back() {
+  await router.back()
+}
 </script>
 
 <template>
-  <NButton text @click="router.back()">
+  <NButton text @click="back">
     <template #icon>
       <NIcon>
         <IconArrowLeft />

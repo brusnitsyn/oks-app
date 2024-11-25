@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NButton, NFlex, NSpace, NText } from 'naive-ui'
-import { IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
+import { IconLayoutColumns, IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
 import { format } from 'date-fns'
+import { useStorage } from '@vueuse/core'
 import { definePageMeta } from '#imports'
 import { AppLink } from '#components'
 
@@ -61,6 +62,11 @@ interface responseData {
   persons: (Person[])[]
 }
 
+interface Day {
+  control_point_option_id: number
+  result_call_id: number
+}
+
 interface Person {
   id: number
   fio: string
@@ -87,7 +93,7 @@ const rowOptions = ref([
 function getClassForRowCallResult(result_call_id) {
   switch (result_call_id) {
     case 1:
-      return 'bg-green-500'
+      return 'bg-green-300'
     case 2:
     case 3:
       return 'bg-transparent'
@@ -98,23 +104,79 @@ function getClassForRowControlOption(control_point_option_id) {
   switch (control_point_option_id) {
     case 2:
     case 3:
-      return 'border-green-500'
+      return 'border-green-300'
     case 4:
-      return 'border-yellow-500'
+      return 'border-cyan-500'
     case 5:
     case 6:
-      return 'border-red-500'
+      return 'border-red-700'
     case 1:
       return 'border-black'
   }
 }
-
-const columns = ref([
+const settingColumns = ref([
   {
-    title: 'ID',
+    label: '№ п/п',
+    value: 'id'
+  },
+  {
+    label: 'Дата поступления',
+    value: 'receipt_at',
+  },
+  {
+    label: 'ФИО',
+    value: 'fio',
+  },
+  {
+    label: 'Дата рождения',
+    value: 'birth_at',
+  },
+  {
+    label: 'Диагноз',
+    value: 'ds',
+  },
+  {
+    label: 'Диспансерное наблюдение',
+    value: 'disp_status',
+  },
+  {
+    label: 'Лекарственные препараты',
+    value: 'lek_pr_status',
+  },
+  {
+    label: 'Дополнительное лечение',
+    value: 'dop_heal',
+  },
+  {
+    label: '3-й день',
+    value: 'day3',
+  },
+  {
+    label: '1 мес',
+    value: 'mes1',
+  },
+  {
+    label: '3 мес',
+    value: 'mes3',
+  },
+  {
+    label: '6 мес',
+    value: 'mes6',
+  },
+  {
+    label: '12 мес',
+    value: 'mes12',
+  },
+  {
+    label: 'Номер телефона',
+    value: 'tel',
+  },
+])
+const defaultColumns = ref([
+  {
+    title: '№\nп/п',
     key: 'id',
-    width: 40,
-    fixed: 'left'
+    width: 50,
   },
   {
     title: 'Дата поступления',
@@ -185,60 +247,85 @@ const columns = ref([
   {
     title: '3-й день',
     key: 'day3',
+    className: 'relative day3',
+    // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
+          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
         },
+        {
+          default: () => row.control_points.day3.result_call_id === 1 ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
   {
     title: '1 мес',
     key: 'mes1',
+    className: 'relative mes1',
+    // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
+          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
         },
+        {
+          default: () => row.control_points.mes1.result_call_id === 1 ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
   {
     title: '3 мес',
     key: 'mes3',
+    className: 'relative mes3',
+    // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
+          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
         },
+        {
+          default: () => row.control_points.mes3.result_call_id === 1 ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
   {
     title: '6 мес',
     key: 'mes6',
+    className: 'relative mes6',
+    // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
+          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
         },
+        {
+          default: () => row.control_points.mes6.result_call_id === 1 ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
   {
     title: '12 мес',
     key: 'mes12',
+    className: 'relative mes12',
+    // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `border-4 rounded h-6 w-6 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
+          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
         },
+        {
+          default: () => row.control_points.mes12.result_call_id === 1 ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yyyy')
+        }
       )
     }
   },
@@ -248,6 +335,49 @@ const columns = ref([
     key: 'tel',
   },
 ])
+const templateSort = settingColumns.value.map(itm => itm.value)
+const storageActiveCols = useStorage('pacient-table-active-cols', templateSort)
+const showColumns = ref([
+  'id',
+  'receipt_at',
+  'fio',
+  'birth_at',
+  'ds',
+  'disp_status',
+  'lek_pr_status',
+  'dop_heal',
+  'day3',
+  'mes1',
+  'mes3',
+  'mes6',
+  'mes12',
+  'tel',
+])
+
+const columns = ref([])
+
+for (const col in storageActiveCols.value) {
+  columns.value.push(defaultColumns.value.find(itm => itm.key === storageActiveCols.value[col]))
+}
+
+watch(storageActiveCols, (newValue) => {
+  for (const col in newValue) {
+    columns.value.push(defaultColumns.value.find(itm => itm.key === storageActiveCols.value[col]))
+  }
+})
+
+// console.log(storageActiveCols.value)
+
+function rowClassName(row: Person) {
+  if (row.control_points.day3.control_point_option_id === null
+    || row.control_points.mes1.control_point_option_id === null
+    || row.control_points.mes3.control_point_option_id === null
+    || row.control_points.mes6.control_point_option_id === null
+    || row.control_points.mes12.control_point_option_id === null
+  ) {
+    return 'no-response'
+  }
+}
 
 function handleSorterChange(sorter) {
   columns.value.forEach((column) => {
@@ -302,7 +432,9 @@ async function searchPacient() {
   await refresh()
 }
 
-function rowProps(row: RowData) {
+function rowProps(row: Person) {
+  if (row.disp_status_id === 2) return { class: '!bg-gray-200' }
+  // console.log(row)
   // if (row.certificate.has_valid === false) { return { style: `background-color: ${changeColor(useThemeVars().value.errorColor, { alpha: 0.35 })} !important;` } }
   // if (row.certificate.has_request_new === true) { return { style: `background-color: ${changeColor(useThemeVars().value.warningColor, { alpha: 0.35 })} !important;` } }
   return { }
@@ -338,8 +470,25 @@ async function downloadExcel() {
 
 const auth = useSanctumAuth()
 
+function updateColumns(value: [], option) {
+  columns.value = []
+  const templateSort = settingColumns.value.map(itm => itm.value)
+  const sortedCols = value.sort((a, b) => templateSort.indexOf(a) - templateSort.indexOf(b))
+
+  storageActiveCols.value = sortedCols
+}
+
 definePageMeta({
   middleware: 'sanctum-auth'
+})
+
+useSeoMeta({
+  title: 'Регистр ИБС и ОКС',
+  ogTitle: 'Регистр ИБС и ОКС',
+  description: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  ogDescription: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  ogImage: '/i.webp',
+  twitterCard: 'summary',
 })
 </script>
 
@@ -371,24 +520,33 @@ definePageMeta({
               </template>
             </NButton>
           </n-input-group>
-
-          
+          <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
+            <NButton secondary>
+              <template #icon>
+                <NIcon :component="IconLayoutColumns" />
+              </template>
+              Отображение столбцов
+            </NButton>
+          </NPopselect>
         </NFlex>
       </NSpace>
 
-      <n-data-table
-        remote
-        :pagination="pagination"
-        :loading="status === 'pending'"
-        :row-props="rowProps"
-        :row-key="rowKey"
-        :min-height="650"
-        :max-height="650"
-        :columns="columns" :data="(data as responseData).data.pacients"
-        :bordered="true"
-        @update:sorter="handleSorterChange"
-        @update:checked-row-keys="handleCheck"
-      />
+      <ClientOnly>
+        <NDataTable
+          remote
+          :single-line="false"
+          :pagination="pagination"
+          :loading="status === 'pending'"
+          :row-props="rowProps"
+          :row-key="rowKey"
+          :min-height="650"
+          :max-height="650"
+          :row-class-name="rowClassName"
+          :columns="columns" :data="(data as responseData).data.pacients"
+          @update:sorter="handleSorterChange"
+          @update:checked-row-keys="handleCheck"
+        />
+      </ClientOnly>
     </NSpace>
   </div>
   <ModalsAddPacient v-model:show="hasOpenMultiAddDialog" :refresh="refresh" />
@@ -400,5 +558,26 @@ definePageMeta({
 }
 :deep(.n-data-table-tr) {
   @apply leading-[18px];
+}
+:deep(.n-data-table .n-data-table-table) {
+  @apply !break-normal;
+}
+:deep(.n-data-table-td.day3) {
+  @apply !p-0;
+}
+:deep(.n-data-table-td.mes1) {
+  @apply !p-0;
+}
+:deep(.n-data-table-td.mes3) {
+  @apply !p-0;
+}
+:deep(.n-data-table-td.mes6) {
+  @apply !p-0;
+}
+:deep(.n-data-table-td.mes12) {
+  @apply !p-0;
+}
+:deep(.n-data-table .n-data-table-td) {
+  @apply !bg-transparent;
 }
 </style>

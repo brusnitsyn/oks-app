@@ -27,6 +27,10 @@ export default defineNuxtConfig({
     }
   },
 
+  routeRules: {
+    '/': { redirect: '/pacient' }
+  },
+
   sanctum: {
     mode: 'token',
     baseUrl: process.env.API_URL,

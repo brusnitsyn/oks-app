@@ -111,6 +111,11 @@ const userOptions = [
       >
         <NFlex vertical justify="space-between" class="h-full">
           <NSpace vertical>
+            <div class="pl-4 pr-8 pt-6">
+              <NuxtLink :to="{ name: 'index' }">
+                <NImage :preview-disabled="true" src="/logo.svg" />
+              </NuxtLink>
+            </div>
             <div class="px-2">
               <NButton quaternary class="!my-6 !py-2 !mb-4 !mt-4 !w-full !h-auto">
                 <template #default>

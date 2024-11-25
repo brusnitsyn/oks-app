@@ -94,6 +94,15 @@ function showOlderDisp(dispid) {
 
 const showAddDisp = ref(false)
 
+useSeoMeta({
+  title: () => `Регистр ИБС и ОКС — ${pacient.value.data.fio}`,
+  ogTitle: 'Регистр ИБС и ОКС',
+  description: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  ogDescription: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  ogImage: '/i.webp',
+  twitterCard: 'summary',
+})
+
 definePageMeta({
   middleware: 'sanctum-auth'
 })
@@ -150,7 +159,7 @@ definePageMeta({
                 <NGrid :cols="2">
                   <NGi><NText>Дата рождения</NText></NGi>
                   <NGi v-if="pacient.data.birth_at">
-                    <NText>{{ format(new Date(pacient.data.birth_at), 'dd.MM.yyyy') }}</NText>
+                    <NText>{{ format(pacient.data.birth_at, 'dd.MM.yyyy') }}</NText>
                   </NGi>
                 </NGrid>
               </NListItem>
@@ -172,7 +181,7 @@ definePageMeta({
                   <NGi><NText>Дата поступления</NText></NGi>
                   <NGi>
                     <NText v-if="pacient.data.disp.begin_at">
-                      {{ format(new Date(pacient.data.disp.begin_at), 'dd.MM.yyyy') }}
+                      {{ format(pacient.data.disp.begin_at, 'dd.MM.yyyy') }}
                     </NText>
                     <NText v-else>
                       —
@@ -233,7 +242,7 @@ definePageMeta({
                   <NTooltip>
                     {{ disp.main_diagnos.name }}
                     <template #trigger>
-                      <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')}`" class="px-4">
+                      <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')} - ${format(new Date(disp.end_at), 'dd.MM.yyyy')}`" class="px-4">
                         <template #header-extra>
                           <NButton secondary size="small" @click="showOlderDisp(disp.id)">
                             Подробнее
