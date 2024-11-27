@@ -253,7 +253,7 @@ const defaultColumns = ref([
       return h(
         'div',
         {
-          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
         },
         {
           default: () => row.control_points.day3.result_call_id === 1 ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yyyy')
@@ -270,7 +270,7 @@ const defaultColumns = ref([
       return h(
         'div',
         {
-          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
         },
         {
           default: () => row.control_points.mes1.result_call_id === 1 ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yyyy')
@@ -287,7 +287,7 @@ const defaultColumns = ref([
       return h(
         'div',
         {
-          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
         },
         {
           default: () => row.control_points.mes3.result_call_id === 1 ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yyyy')
@@ -304,7 +304,7 @@ const defaultColumns = ref([
       return h(
         'div',
         {
-          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
         },
         {
           default: () => row.control_points.mes6.result_call_id === 1 ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yyyy')
@@ -321,7 +321,7 @@ const defaultColumns = ref([
       return h(
         'div',
         {
-          class: `flex flex-col justify-center items-center border-2 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
         },
         {
           default: () => row.control_points.mes12.result_call_id === 1 ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yyyy')
@@ -496,7 +496,7 @@ useSeoMeta({
   <div>
     <div class="flex flex-row justify-between items-center pb-5">
       <h1 class="text-2xl font-bold">
-        Регистр ИБС и ОКС
+        Регистр пациентов с ОКС
       </h1>
       <NSpace>
         <NButton v-if="auth.isAdmin || auth.isDoctor" type="primary" @click="openDialog">

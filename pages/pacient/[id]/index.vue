@@ -258,7 +258,7 @@ definePageMeta({
           <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
             <NList>
               <NScrollbar>
-                <NListItem v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.call != null ? '#7FE7C4' : ''}`">
+                <NListItem v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.control_point.controled_at != null ? '#7FE7C4' : ''}`">
                   <NGrid cols="2" class="px-4">
                     <NGridItem class="flex items-center">
                       <NText class="font-bold">

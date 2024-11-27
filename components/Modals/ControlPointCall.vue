@@ -20,10 +20,13 @@ const { data: controlPoint, status } = await useAPI(`/api/control-point/${props.
   server: false,
 })
 
+// const { data: briefAnswers, briefAnswersStatus } = await useAPI(`/api/brief/${controlPoint.value.data.call.brief.id}`, {
+//   server: false,
+// })
+
 model.value = {
   control_point: { ...controlPoint?.value.data?.control_point },
   call: { ...controlPoint?.value.data?.call } ?? { },
-  brief: { ...controlPoint?.value.data?.call.brief },
 }
 
 // if () {
@@ -85,24 +88,101 @@ const resultCall = computed({
     return model.value.call.result_call_id
   },
   set(value) {
-    if (value === 2) { model.value.control_point.control_point_option_id = 1 }
-    else { model.value.control_point.control_point_option_id = null }
+    if (value === 2) {
+      model.value.control_point.control_point_option_id = 1
+      model.value.call.brief_answers = {}
+    }
     model.value.call.result_call_id = value
   }
 })
 
-const briefIndexes = computed(() => {
-  const indexes = []
-  for (const index in controlPoint.value.data.call.brief.chapters) {
-    indexes.push(index)
+// const briefIndexes = computed(() => {
+//   const indexes = []
+//   for (const index in controlPoint.value.data.call.brief.chapters) {
+//     indexes.push(index)
+//   }
+//
+//   return indexes
+// })
+
+const shadowSelectedAnswers = ref([])
+
+function onCheckBriefAnswer(answerId, question) {
+  const findShadow = model.value.call.brief_questions_answers.find(itm => itm.id === answerId)
+  const duplicationIndex = shadowSelectedAnswers.value.findIndex(itm => itm.disp_call_brief_question_id === question.id)
+
+  if (duplicationIndex !== -1) {
+    shadowSelectedAnswers.value.splice(duplicationIndex, 1)
   }
 
-  return indexes
-})
+  shadowSelectedAnswers.value.push(findShadow)
 
-function setAnswer(value, questionId) {
-  model.value.brief.answers.set(questionId, value)
+  // const answers = model.value.call.brief_answers
+  // const answersKeys = Object.keys(model.value.call.brief_answers)
+  // const hasAddedAnswerValue = answers.find(itm => itm === answerId)
+  // const hasAddedAnswer = answersKeys.findIndex(itm => Number(itm) === question.id)
+  //
+  // console.log(hasAddedAnswerValue, hasAddedAnswer
+
+  // if (q.has_send_smp === true) {
+  //   // if (hasAddedAnswer !== -1) {
+  //   //   model.value.control_point.control_point_option_id = 6
+  //   //   return
+  //   // }
+  //
+  //   model.value.control_point.control_point_option_id = 6
+  // }
+  // if (q.has_send_doctor === true) {
+  //   // if (hasAddedAnswer !== -1) {
+  //   //   model.value.control_point.control_point_option_id = 5
+  //   //   return
+  //   // }
+  //   if (model.value.control_point.control_point_option_id === 6) {
+  //     model.value.control_point.control_point_option_id = 5
+  //   }
+  // }
+  //
+  // if (q.has_attention === true) {
+  //   // if (hasAddedAnswer !== -1) {
+  //   //   model.value.control_point.control_point_option_id = 4
+  //   //   return
+  //   // }
+  //
+  //   if (model.value.control_point.control_point_option_id !== 6 || model.value.control_point.control_point_option_id !== 5) {
+  //     model.value.control_point.control_point_option_id = 4
+  //     return
+  //   }
+  // }
+  //
+  // if (q.has_need_send_doctor === true) {
+  //
+  // }
+
+  // model.value.control_point.control_point_option_id = 2
 }
+
+watch(shadowSelectedAnswers.value, (newValue) => {
+  const hasSendSmp = newValue.findIndex(itm => itm.has_send_smp === true)
+  if (hasSendSmp !== -1) {
+    model.value.control_point.control_point_option_id = 6
+
+    return
+  }
+
+  const hasSendDoctor = newValue.findIndex(itm => itm.has_send_doctor === true)
+  if (hasSendDoctor !== -1) {
+    model.value.control_point.control_point_option_id = 5
+  }
+
+  const hasAttention = newValue.findIndex(itm => itm.has_attention === true)
+  if (hasAttention !== -1) {
+    model.value.control_point.control_point_option_id = 4
+  }
+
+  if (hasSendSmp === -1 && hasSendDoctor === -1 && hasAttention === -1) {
+    model.value.control_point.control_point_option_id = 2
+  }
+})
 
 function handleClose() {
   show.value = false
@@ -123,7 +203,7 @@ function handleClose() {
                     <NText class="font-medium">
                       {{ index + 1 }}. {{ question.question }}
                     </NText>
-                    <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :name="question.question">
+                    <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1" :name="question.question" @update:value="answerId => onCheckBriefAnswer(answerId, question)">
                       <NRadio v-for="answer in question.answers" :label="answer.answer" :value="answer.id" />
                     </NRadioGroup>
                   </NSpace>
@@ -138,7 +218,7 @@ function handleClose() {
           <NFormItemGi label="Результат" path="control_point_option_id">
             <SelectControlPointOption
               v-model:value="model.control_point.control_point_option_id"
-              :disabled="model.control_point.control_point_option_id === 1"
+              disabled
             />
           </NFormItemGi>
           <NFormItemGi label="Результат разговора" path="result_call_id">
