@@ -142,7 +142,7 @@ const userOptions = [
               :render-label="renderMenuLabel"
               :render-icon="renderMenuIcon"
               :expand-icon="expandIcon"
-              :default-value="activeRoute"
+              :value="activeRoute"
             />
           </NSpace>
           <!--          <NSpace vertical class="p-8"> -->

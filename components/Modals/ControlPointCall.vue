@@ -49,20 +49,17 @@ rules.value = {
         message: 'Результат обязателен!',
         trigger: ['blur', 'change']
       }
-    ]
+    ],
   },
   call: {
     result_call_id: [
       {
         type: 'number',
         required: true,
-        message: 'Результат разговора обязателен!',
+        message: 'Результат дозвона обязателен!',
         trigger: ['blur', 'change']
       }
     ],
-  },
-  brief: {
-
   }
 }
 
@@ -92,6 +89,10 @@ const resultCall = computed({
       model.value.control_point.control_point_option_id = 1
       model.value.call.brief_answers = {}
     }
+    else {
+      model.value.control_point.control_point_option_id = null
+    }
+
     model.value.call.result_call_id = value
   }
 })
@@ -116,49 +117,6 @@ function onCheckBriefAnswer(answerId, question) {
   }
 
   shadowSelectedAnswers.value.push(findShadow)
-
-  // const answers = model.value.call.brief_answers
-  // const answersKeys = Object.keys(model.value.call.brief_answers)
-  // const hasAddedAnswerValue = answers.find(itm => itm === answerId)
-  // const hasAddedAnswer = answersKeys.findIndex(itm => Number(itm) === question.id)
-  //
-  // console.log(hasAddedAnswerValue, hasAddedAnswer
-
-  // if (q.has_send_smp === true) {
-  //   // if (hasAddedAnswer !== -1) {
-  //   //   model.value.control_point.control_point_option_id = 6
-  //   //   return
-  //   // }
-  //
-  //   model.value.control_point.control_point_option_id = 6
-  // }
-  // if (q.has_send_doctor === true) {
-  //   // if (hasAddedAnswer !== -1) {
-  //   //   model.value.control_point.control_point_option_id = 5
-  //   //   return
-  //   // }
-  //   if (model.value.control_point.control_point_option_id === 6) {
-  //     model.value.control_point.control_point_option_id = 5
-  //   }
-  // }
-  //
-  // if (q.has_attention === true) {
-  //   // if (hasAddedAnswer !== -1) {
-  //   //   model.value.control_point.control_point_option_id = 4
-  //   //   return
-  //   // }
-  //
-  //   if (model.value.control_point.control_point_option_id !== 6 || model.value.control_point.control_point_option_id !== 5) {
-  //     model.value.control_point.control_point_option_id = 4
-  //     return
-  //   }
-  // }
-  //
-  // if (q.has_need_send_doctor === true) {
-  //
-  // }
-
-  // model.value.control_point.control_point_option_id = 2
 }
 
 watch(shadowSelectedAnswers.value, (newValue) => {
@@ -193,40 +151,44 @@ function handleClose() {
 <template>
   <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5" :title="controlPoint.data.control_point.point">
     <NSpace vertical :size="16">
-      <NCollapse accordion>
-        <template v-for="(chapter, index) in controlPoint.data.call.brief.chapters">
-          <NCollapseItem :title="chapter.name" :name="index">
-            <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
-              <template v-for="(question, index) in chapter.questions">
-                <NGridItem>
-                  <NSpace vertical>
-                    <NText class="font-medium">
-                      {{ index + 1 }}. {{ question.question }}
-                    </NText>
-                    <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1" :name="question.question" @update:value="answerId => onCheckBriefAnswer(answerId, question)">
-                      <NRadio v-for="answer in question.answers" :label="answer.answer" :value="answer.id" />
-                    </NRadioGroup>
-                  </NSpace>
-                </NGridItem>
-              </template>
-            </NGrid>
-          </NCollapseItem>
-        </template>
-      </NCollapse>
       <NForm ref="formRef" :disabled="controlPoint.data.call !== {} && !useSanctumAuth().isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
         <NGrid cols="2" x-gap="8">
-          <NFormItemGi label="Результат" path="control_point_option_id">
+          <NFormItemGi label="Результат дозвона" path="call.result_call_id">
+            <SelectResultCall
+              v-model:value="resultCall"
+            />
+          </NFormItemGi>
+          <NFormItemGi label="Результат" path="control_point.control_point_option_id">
             <SelectControlPointOption
               v-model:value="model.control_point.control_point_option_id"
               disabled
             />
           </NFormItemGi>
-          <NFormItemGi label="Результат разговора" path="result_call_id">
-            <SelectResultCall
-              v-model:value="resultCall"
-            />
-          </NFormItemGi>
-          <NFormItemGi span="2" label="Примечание" path="info">
+
+          <NGi span="2">
+            <NCollapse accordion>
+              <template v-for="(chapter, index) in controlPoint.data.call.brief.chapters">
+                <NCollapseItem :title="chapter.name" :name="index" :disabled="model.call.result_call_id === null || model.control_point.control_point_option_id === 1">
+                  <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
+                    <template v-for="(question, index) in chapter.questions">
+                      <NGridItem>
+                        <NSpace vertical>
+                          <NText class="font-medium">
+                            {{ index + 1 }}. {{ question.question }}
+                          </NText>
+                          <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1" :name="question.question" @update:value="answerId => onCheckBriefAnswer(answerId, question)">
+                            <NRadio v-for="answer in question.answers" :label="answer.answer" :value="answer.id" />
+                          </NRadioGroup>
+                        </NSpace>
+                      </NGridItem>
+                    </template>
+                  </NGrid>
+                </NCollapseItem>
+              </template>
+            </NCollapse>
+          </NGi>
+
+          <NFormItemGi span="2" label="Примечание" path="info" class="pt-5">
             <NInput
               v-model:value="model.call.info"
               type="textarea"
