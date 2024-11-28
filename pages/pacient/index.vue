@@ -580,4 +580,7 @@ useSeoMeta({
 :deep(.n-data-table .n-data-table-td) {
   @apply !bg-transparent;
 }
+:deep(.n-data-table-base-table-body) {
+  @apply bg-white;
+}
 </style>

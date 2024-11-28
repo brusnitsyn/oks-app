@@ -228,7 +228,7 @@ definePageMeta({
       <NGi span="2">
         <NSpace vertical :size="16">
           <NCard title="Диспансерные наблюдения" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-            <template #header-extra>
+            <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra>
               <NButton text @click="showAddDisp = true">
                 <template #icon>
                   <IconSquareRoundedPlus />
@@ -256,13 +256,16 @@ definePageMeta({
             </NList>
           </NCard>
           <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
-            <NList>
+            <NList :show-divider="false">
               <NScrollbar>
-                <NListItem v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.control_point.controled_at != null ? '#7FE7C4' : ''}`">
+                <NListItem class="rounded" v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.control_point.controled_at != null ? '#7FE7C4' : ''}`">
                   <NGrid cols="2" class="px-4">
-                    <NGridItem class="flex items-center">
+                    <NGridItem class="flex items-center gap-x-1">
                       <NText class="font-bold">
                         {{ cp.control_point.point }}
+                      </NText>
+                      <NText>
+                        &middot; {{ format(cp.control_point.control_at, 'dd.MM.yyyy') }}
                       </NText>
                     </NGridItem>
                     <NGridItem class="flex items-center justify-end" align="end">
