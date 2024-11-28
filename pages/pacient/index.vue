@@ -93,7 +93,7 @@ const rowOptions = ref([
 function getClassForRowCallResult(result_call_id) {
   switch (result_call_id) {
     case 1:
-      return 'bg-green-300'
+      return 'bg-green-300 mx-4'
     case 2:
     case 3:
       return 'bg-transparent'
