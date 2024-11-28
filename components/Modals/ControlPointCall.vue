@@ -107,8 +107,42 @@ const resultCall = computed({
 // })
 
 const shadowSelectedAnswers = ref([])
+const lastAnswerId = ref(null)
 
-function onCheckBriefAnswer(answerId, question) {
+function hasDisableAnswer(answerId: number, questionId: number) {
+  const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
+  const containDisableAnswers = shadowSelectedAnswers.value.filter(itm => itm.disp_call_brief_question_id === lastAnswer.disp_call_brief_question_id)
+  const index = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true)
+
+  if (index !== -1) {
+    const disableOtherAnswers = shadowSelectedAnswers.value.filter(itm => itm.has_disable_other_answer === true)
+    for (const disableOtherAnswer of disableOtherAnswers) {
+      const chapter = controlPoint.value.data.call.brief.chapters.find(itm => itm.id === disableOtherAnswer.disp_call_brief_question_chapter_id)
+      const questionsToDisable = chapter.questions.filter(itm => !(itm.id === disableOtherAnswer.disp_call_brief_question_id))
+
+      for (const question of questionsToDisable) {
+        const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.disp_call_brief_question_id === question.id - 1)
+        if (spliceIndex !== -1) {
+          shadowSelectedAnswers.value.splice(spliceIndex, 1)
+        }
+        if (disableOtherAnswer.has_disable_other_answer) {
+          question.disabled = true
+          model.value.call.brief_answers[question.id] = null
+        }
+      }
+    }
+  }
+  else {
+    const chapter = controlPoint.value.data.call.brief.chapters.find(itm => itm.id === lastAnswer.disp_call_brief_question_chapter_id)
+    const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true)
+    for (const question of questionsToDisabled) {
+      question.disabled = false
+    }
+  }
+}
+
+function onCheckBriefAnswer(chapterId, answerId, question) {
+  // lastAnswerId.value = answerId
   const findShadow = model.value.call.brief_questions_answers.find(itm => itm.id === answerId)
   const duplicationIndex = shadowSelectedAnswers.value.findIndex(itm => itm.disp_call_brief_question_id === question.id)
 
@@ -117,6 +151,8 @@ function onCheckBriefAnswer(answerId, question) {
   }
 
   shadowSelectedAnswers.value.push(findShadow)
+
+  hasDisableAnswer(answerId, question.id)
 }
 
 watch(shadowSelectedAnswers.value, (newValue) => {
@@ -176,7 +212,7 @@ function handleClose() {
                           <NText class="font-medium">
                             {{ index + 1 }}. {{ question.question }}
                           </NText>
-                          <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1" :name="question.question" @update:value="answerId => onCheckBriefAnswer(answerId, question)">
+                          <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1 || question.disabled" :name="question.question" @update:value="answerId => onCheckBriefAnswer(chapter.id, answerId, question)">
                             <NRadio v-for="answer in question.answers" :label="answer.answer" :value="answer.id" />
                           </NRadioGroup>
                         </NSpace>

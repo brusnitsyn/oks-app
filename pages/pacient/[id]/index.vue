@@ -193,7 +193,7 @@ definePageMeta({
                 <NGrid :cols="2">
                   <NGi><NText>Основной диагноз</NText></NGi>
                   <NGi>
-                    <NText>{{ pacient.data.disp.main_diagnos.name }}</NText>
+                    <NText>{{ pacient.data.disp.main_diagnos?.name }}</NText>
                   </NGi>
                 </NGrid>
               </NListItem>
@@ -240,7 +240,7 @@ definePageMeta({
               <NScrollbar class="max-h-[360px]">
                 <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
                   <NTooltip>
-                    {{ disp.main_diagnos.name }}
+                    {{ disp.main_diagnos?.name }}
                     <template #trigger>
                       <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')} - ${format(new Date(disp.end_at), 'dd.MM.yyyy')}`" class="px-4">
                         <template #header-extra>
