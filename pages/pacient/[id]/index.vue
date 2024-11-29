@@ -254,6 +254,13 @@ definePageMeta({
                 </NListItem>
               </NScrollbar>
             </NList>
+            <NEmpty v-else description="Диспансерных наблюдений нет" class="pt-5 pb-4">
+              <template #extra>
+                <NButton v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" size="small" @click="showAddDisp = true">
+                  Добавить наблюдение
+                </NButton>
+              </template>
+            </NEmpty>
           </NCard>
           <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
             <NList :show-divider="false">

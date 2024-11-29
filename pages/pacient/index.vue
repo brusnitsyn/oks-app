@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NFlex, NSpace, NText } from 'naive-ui'
+import { NButton, NFlex, NSpace, NText, NEllipsis } from 'naive-ui'
 import { IconLayoutColumns, IconSearch, IconSquareRoundedPlus } from '@tabler/icons-vue'
 import { format } from 'date-fns'
 import { useStorage } from '@vueuse/core'
@@ -93,10 +93,10 @@ const rowOptions = ref([
 function getClassForRowCallResult(result_call_id) {
   switch (result_call_id) {
     case 1:
-      return 'bg-green-300 mx-4'
+      return 'bg-green-300 mx-1'
     case 2:
     case 3:
-      return 'bg-transparent'
+      return 'bg-transparent mx-1'
   }
 }
 
@@ -179,11 +179,13 @@ const defaultColumns = ref([
     title: '№\nп/п',
     key: 'id',
     width: 50,
+    align: 'center'
   },
   {
     title: 'Дата поступления',
     key: 'receipt_at',
     width: 120,
+    align: 'center',
     render(row) {
       return h(
         NText,
@@ -200,6 +202,7 @@ const defaultColumns = ref([
     sorter: 'default',
     sortOrder: false,
     width: 280,
+    align: 'center',
     fixed: 'left',
     render(row) {
       return h(
@@ -216,6 +219,7 @@ const defaultColumns = ref([
   {
     title: 'Дата рождения',
     key: 'birth_at',
+    align: 'center',
     render(row) {
       return h(
         NText,
@@ -229,26 +233,40 @@ const defaultColumns = ref([
   {
     title: 'Диагноз',
     width: 80,
+    align: 'center',
     key: 'ds',
   },
   {
     title: 'Диспансерное\nнаблюдение',
     width: 120,
+    align: 'center',
     key: 'disp_status',
   },
   {
     title: 'Лекарственные\nпрепараты',
     width: 130,
+    align: 'center',
     key: 'lek_pr_status',
   },
   {
     title: 'Дополнительное\nлечение',
     width: 140,
+    align: 'center',
     key: 'dop_heal',
+    render(row) {
+      return h(
+        NEllipsis,
+        {},
+        {
+          default: () => row.dop_heal
+        }
+      )
+    }
   },
   {
     title: '3-й день',
     key: 'day3',
+    align: 'center',
     className: 'relative day3',
     // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
@@ -258,7 +276,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.day3.result_call_id === 1 ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yyyy')
+          default: () => row.control_points.day3.result_call_id === 1 ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -266,6 +284,7 @@ const defaultColumns = ref([
   {
     title: '1 мес',
     key: 'mes1',
+    align: 'center',
     className: 'relative mes1',
     // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
@@ -275,7 +294,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes1.result_call_id === 1 ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yyyy')
+          default: () => row.control_points.mes1.result_call_id === 1 ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -284,6 +303,7 @@ const defaultColumns = ref([
     title: '3 мес',
     key: 'mes3',
     className: 'relative mes3',
+    align: 'center',
     // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
@@ -292,7 +312,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes3.result_call_id === 1 ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yyyy')
+          default: () => row.control_points.mes3.result_call_id === 1 ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -301,6 +321,7 @@ const defaultColumns = ref([
     title: '6 мес',
     key: 'mes6',
     className: 'relative mes6',
+    align: 'center',
     // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
@@ -309,7 +330,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes6.result_call_id === 1 ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yyyy')
+          default: () => row.control_points.mes6.result_call_id === 1 ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -318,15 +339,16 @@ const defaultColumns = ref([
     title: '12 мес',
     key: 'mes12',
     className: 'relative mes12',
+    align: 'center',
     // cellProps: (row, index) => customCellProps(row, index)
     render(row) {
       return h(
         'div',
         {
-          class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
+          class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes12.result_call_id === 1 ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yyyy')
+          default: () => row.control_points.mes12.result_call_id === 1 ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -334,6 +356,7 @@ const defaultColumns = ref([
   {
     title: 'Номер телефона',
     width: 150,
+    align: 'center',
     key: 'tel',
   },
 ])
