@@ -95,10 +95,10 @@ function showOlderDisp(dispid) {
 const showAddDisp = ref(false)
 
 useSeoMeta({
-  title: () => `Регистр ИБС и ОКС — ${pacient.value.data.fio}`,
-  ogTitle: 'Регистр ИБС и ОКС',
-  description: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
-  ogDescription: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  title: () => `Регистр пациентов с ОКС — ${pacient.value.data.fio}`,
+  ogTitle: 'Регистр пациентов с ОКС',
+  description: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
+  ogDescription: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
   ogImage: '/i.webp',
   twitterCard: 'summary',
 })

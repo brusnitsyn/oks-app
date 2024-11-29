@@ -93,10 +93,10 @@ const rowOptions = ref([
 function getClassForRowCallResult(result_call_id) {
   switch (result_call_id) {
     case 1:
-      return 'bg-green-300 mx-1'
+      return 'bg-green-300 mx-3'
     case 2:
     case 3:
-      return 'bg-transparent mx-1'
+      return 'bg-transparent mx-3'
   }
 }
 
@@ -508,10 +508,10 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Регистр ИБС и ОКС',
-  ogTitle: 'Регистр ИБС и ОКС',
-  description: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
-  ogDescription: 'Регистр ИБС и ОКС Амурской областной клинической больницы.',
+  title: 'Регистр пациентов с ОКС',
+  ogTitle: 'Регистр пациентов с ОКС',
+  description: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
+  ogDescription: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
   ogImage: '/i.webp',
   twitterCard: 'summary',
 })

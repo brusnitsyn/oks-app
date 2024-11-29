@@ -188,7 +188,7 @@ function handleClose() {
                 v-model:value="model.disp.disp_reason_close_id"
               />
             </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата поступления" path="disp.begin_at">
+            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата поступления на учет" path="disp.begin_at">
               <NDatePicker
                 v-model:value="model.disp.begin_at"
                 placeholder="11.11.2024"

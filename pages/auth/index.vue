@@ -47,6 +47,15 @@ async function validateForm(e) {
   )
 }
 
+useSeoMeta({
+  title: 'Регистр пациентов с ОКС — Вход',
+  ogTitle: 'Регистр пациентов с ОКС',
+  description: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
+  ogDescription: 'Регистр пациентов с ОКС Амурской областной клинической больницы.',
+  ogImage: '/i.webp',
+  twitterCard: 'summary',
+})
+
 definePageMeta({
   layout: 'centered',
   middleware: 'sanctum-guest'
