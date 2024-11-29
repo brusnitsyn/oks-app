@@ -5,5 +5,5 @@ const data = useNuxtData('control-point').data
 </script>
 
 <template>
-  <NSelect v-model:value="model" filterable :options="data" value-field="id" label-field="name" placeholder="Норма" />
+  <NSelect v-model:value="model" filterable :options="data" value-field="id" label-field="name" placeholder="" />
 </template>

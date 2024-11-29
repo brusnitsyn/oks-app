@@ -85,12 +85,17 @@ const resultCall = computed({
     return model.value.call.result_call_id
   },
   set(value) {
-    if (value === 2) {
-      model.value.control_point.control_point_option_id = 1
-      model.value.call.brief_answers = {}
-    }
-    else {
-      model.value.control_point.control_point_option_id = null
+    switch (value) {
+      case 1:
+        model.value.control_point.control_point_option_id = null
+        break
+      case 2:
+        model.value.control_point.control_point_option_id = 1
+        model.value.call.brief_answers = {}
+        break
+      case 3:
+        model.value.control_point.control_point_option_id = 1
+        break
     }
 
     model.value.call.result_call_id = value
