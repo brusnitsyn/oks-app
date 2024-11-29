@@ -546,7 +546,7 @@ useSeoMeta({
             </NButton>
           </n-input-group>
           <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
-            <NButton secondary>
+            <NButton strong secondary>
               <template #icon>
                 <NIcon :component="IconLayoutColumns" />
               </template>

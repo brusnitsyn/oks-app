@@ -5,6 +5,6 @@ const { data, status } = useAPI('/api/mkb')
 </script>
 
 <template>
-  <NSelect v-if="status === 'success'" v-model:value="model" filterable :options="data.data" value-field="id" label-field="name" placeholder="Z00.0. Общий медицинский осмотр" />
+  <NSelect v-if="status === 'success'" v-model:value="model" filterable :options="data.data" value-field="id" label-field="name" placeholder="" />
   <NSkeleton v-else :sharp="false" height="100%" width="100%" />
 </template>

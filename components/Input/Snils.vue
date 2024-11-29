@@ -3,7 +3,7 @@ const model = defineModel()
 </script>
 
 <template>
-  <NInput v-model:value="model" v-mask="'###-###-### ##'" placeholder="123-456-789 00" />
+  <NInput v-model:value="model" v-mask="'###-###-### ##'" placeholder="" />
 </template>
 
 <style scoped>

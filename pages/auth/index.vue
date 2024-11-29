@@ -72,13 +72,13 @@ definePageMeta({
       pane-wrapper-style="margin: 0 -4px"
       pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
     >
-      <NTabPane name="signin" tab="Авторизация">
+      <NTabPane name="signin" tab="Регистр пациентов с ОКС">
         <NForm ref="formRef" :model="model" :rules="rules" class="pb-2" @submit.prevent="validateForm" :disabled="loading">
           <NFormItem path="login" label="Имя пользователя">
-            <NInput id="login" v-model:value="model.login" type="text" placeholder="abrusnitsyn" @keydown.enter.prevent="validateForm" />
+            <NInput id="login" v-model:value="model.login" type="text" placeholder="" @keydown.enter.prevent="validateForm" />
           </NFormItem>
           <NFormItem path="password" label="Пароль">
-            <NInput id="password" v-model:value="model.password" show-password-on="click" type="password" placeholder="••••••" @keydown.enter.prevent="validateForm" />
+            <NInput id="password" v-model:value="model.password" show-password-on="click" type="password" placeholder="" @keydown.enter.prevent="validateForm" />
           </NFormItem>
 
           <NButton attr-type="submit" type="primary" block strong @click="validateForm" :loading="loading">
@@ -88,6 +88,9 @@ definePageMeta({
       </NTabPane>
     </NTabs>
   </NCard>
+  <div class="absolute left-10 top-8">
+    <NImage src="/logo-short.svg" />
+  </div>
 </template>
 
 <style scoped>

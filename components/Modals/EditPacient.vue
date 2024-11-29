@@ -25,13 +25,14 @@ rules.value = {
       trigger: ['blur', 'input']
     },
     {
-      min: 11,
+      min: 14,
       message: 'Номер СНИЛС должен содержать 11 цифр!',
       trigger: ['blur', 'input']
     },
   ],
   tel: [
     {
+      min: 18,
       required: true,
       message: 'Номер телефона обязателен!',
       trigger: ['blur', 'input']
@@ -39,23 +40,32 @@ rules.value = {
   ],
   birth_at: [
     {
-      type: 'number',
       required: true,
-      message: 'Дата рождения обязательна!',
-      trigger: ['blur', 'change']
+      validator(rule, value) {
+        if (!value) {
+          return new Error('Дата рождения обязательна!')
+        }
+      },
+      trigger: ['blur', 'input']
     }
   ],
   receipt_at: [
+    {
+      required: true,
+      validator(rule, value) {
+        if (!value) {
+          return new Error('Дата поступления обязательна!')
+        }
+      },
+      trigger: ['blur', 'input']
+    }
+  ],
+  discharge_at: [
     {
       type: 'number',
       required: true,
       message: 'Дата поступления обязательна!',
       trigger: ['blur', 'change']
-    }
-  ],
-  discharge_at: [
-    {
-      required: false,
     }
   ],
   lpu_id: [
@@ -75,11 +85,73 @@ rules.value = {
         trigger: ['blur', 'change']
       }
     ],
+    conco_diagnos_id: [
+      {
+        type: 'array',
+        required: true,
+        message: 'Сопутствующий диагноз обязателен!',
+        trigger: ['blur', 'change']
+      }
+    ],
+    complications_id: [
+      {
+        type: 'array',
+        required: true,
+        message: 'Осложнения обязателены!',
+        trigger: ['blur', 'change']
+      }
+    ],
+    lek_pr_state_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Лекарственные препараты обязателены!',
+        trigger: ['blur', 'change']
+      }
+    ],
+    disp_dop_health_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Дополнительное лечение обязателено!',
+        trigger: ['blur', 'change']
+      }
+    ],
     disp_state_id: [
       {
         type: 'number',
         required: true,
         message: 'Статус обязателен!',
+        trigger: ['blur', 'change']
+      }
+    ],
+    end_at: [
+      {
+        required: true,
+        validator(rule, value) {
+          if (!value) {
+            return new Error('Дата снятия с учета обязательна!')
+          }
+        },
+        trigger: ['blur', 'input']
+      }
+    ],
+    begin_at: [
+      {
+        validator(rule, value) {
+          if (!value) {
+            return new Error('Дата поступления на учет обязательна!')
+          }
+        },
+        required: true,
+        trigger: ['blur', 'input']
+      }
+    ],
+    disp_reason_close_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Причина снятия с учета обязательна!',
         trigger: ['blur', 'change']
       }
     ],
@@ -111,9 +183,9 @@ function handleClose() {
 
 <template>
   <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Редактирование пациента">
-    <NTabs type="segment">
-      <NTabPane display-directive="show" name="info" tab="Персональная информация">
-        <NForm ref="formRef" :disabled="useSanctumAuth().isOperator" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+    <NForm ref="formRef" :disabled="useSanctumAuth().isOperator" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+      <NTabs type="segment">
+        <NTabPane display-directive="show" name="info" tab="Персональная информация">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi label="ЛПУ" path="lpu_id">
               <SelectLpu
@@ -123,7 +195,7 @@ function handleClose() {
             <NFormItemGi label="ФИО" path="fio">
               <NInput
                 v-model:value="model.fio"
-                placeholder="Брусницын Андрей Олегович"
+                placeholder=""
               />
             </NFormItemGi>
             <NFormItemGi label="СНИЛС" path="snils">
@@ -133,22 +205,14 @@ function handleClose() {
               <InputTel v-model:value="model.tel" />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
-              <NDatePicker
+              <SelectDatePicker
                 v-model:value="model.birth_at"
-                placeholder="29.12.2001"
-                format="dd.MM.yyyy"
-                type="date"
-                class="w-full"
               />
             </NFormItemGi>
             <NFormItemGi label="Дата поступления" path="receipt_at">
-              <NDatePicker
+              <SelectDatePicker
                 v-model:value="model.receipt_at"
                 :disabled="!useSanctumAuth().isAdmin"
-                placeholder="10.11.2024"
-                format="dd.MM.yyyy"
-                type="date"
-                class="w-full"
               />
             </NFormItemGi>
             <!--            <NFormItemGi label="Дата выписки" path="discharge_at"> -->
@@ -161,10 +225,8 @@ function handleClose() {
             <!--              /> -->
             <!--            </NFormItemGi> -->
           </NGrid>
-        </NForm>
-      </NTabPane>
-      <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Диспансерное наблюдение">
-        <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+        </NTabPane>
+        <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Диспансерное наблюдение">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
               <SelectDiagnosMain
@@ -192,28 +254,20 @@ function handleClose() {
               />
             </NFormItemGi>
             <NFormItemGi label="Дата поступления на учет" path="disp.begin_at">
-              <NDatePicker
+              <SelectDatePicker
                 v-model:value="model.disp.begin_at"
                 :disabled="!useSanctumAuth().isAdmin"
-                placeholder="11.11.2024"
-                format="dd.MM.yyyy"
-                type="datetime"
-                class="w-full"
               />
             </NFormItemGi>
             <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата снятия с учета" path="disp.end_at">
-              <NDatePicker
+              <SelectDatePicker
                 v-model:value="model.disp.end_at"
-                placeholder="11.11.2024"
-                format="dd.MM.yyyy"
-                type="date"
-                class="w-full"
               />
             </NFormItemGi>
           </NGrid>
-        </NForm>
-      </NTabPane>
-    </NTabs>
+        </NTabPane>
+      </NTabs>
+    </NForm>
 
     <template #action>
       <NFlex justify="space-between" align="center">

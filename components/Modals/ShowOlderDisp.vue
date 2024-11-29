@@ -86,7 +86,7 @@ function handleClose() {
         <NFormItemGi label="Дата поступления на учет" path="begin_at">
           <NDatePicker
             v-model:value="model.begin_at"
-            placeholder="11.11.2024"
+            placeholder=""
             format="dd.MM.yyyy"
             type="date"
             class="w-full"
@@ -95,7 +95,7 @@ function handleClose() {
         <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
           <NDatePicker
             v-model:value="model.end_at"
-            placeholder="11.11.2024"
+            placeholder=""
             format="dd.MM.yyyy"
             type="date"
             class="w-full"
