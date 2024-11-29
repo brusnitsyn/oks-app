@@ -88,7 +88,7 @@ rules.value = {
     ],
     conco_diagnos_id: [
       {
-        type: 'number',
+        type: 'array',
         required: true,
         message: 'Сопутствующий диагноз обязателен!',
         trigger: ['blur', 'change']
@@ -96,7 +96,7 @@ rules.value = {
     ],
     complications: [
       {
-        type: 'number',
+        type: 'array',
         required: true,
         message: 'Осложнения обязателены!',
         trigger: ['blur', 'change']
