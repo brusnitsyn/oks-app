@@ -150,8 +150,9 @@ rules.value = {
     ]
   },
 }
-
+const loading = ref(false)
 function handleSubmit() {
+  loading.value = true
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       const { data, status } = await useAPI(`/api/pacient`, {
@@ -162,7 +163,10 @@ function handleSubmit() {
       if (status.value === 'success') {
         show.value = false
         const id = data.value.id
+        loading.value = false
         navigateTo({ name: 'pacient-id', params: { id } })
+      } else {
+        loading.value = false
       }
     }
   })
@@ -265,7 +269,7 @@ function handleClose() {
         <NButton secondary @click="handleClose">
           Отмена
         </NButton>
-        <NButton type="primary" :loading="pending" :disabled="pending || !edited" attr-type="submit" @click="handleSubmit">
+        <NButton type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
           Добавить пациента
         </NButton>
       </NFlex>
