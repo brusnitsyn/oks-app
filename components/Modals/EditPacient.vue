@@ -97,7 +97,7 @@ rules.value = {
       {
         type: 'array',
         required: true,
-        message: 'Осложнения обязателены!',
+        message: 'Осложнения обязательны!',
         trigger: ['blur', 'change']
       }
     ],
@@ -105,7 +105,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Лекарственные препараты обязателены!',
+        message: 'Лекарственные препараты обязательны!',
         trigger: ['blur', 'change']
       }
     ],
@@ -113,7 +113,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Дополнительное лечение обязателено!',
+        message: 'Дополнительное лечение обязательно!',
         trigger: ['blur', 'change']
       }
     ],
