@@ -276,7 +276,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.day3.result_call_id === 1 || row.control_points.day3.result_call_id === 3 ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yy')
+          default: () => row.control_points.day3.result_call_id !== null ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -294,7 +294,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes1.result_call_id === 1 || row.control_points.mes1.result_call_id === 3 ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yy')
+          default: () => row.control_points.mes1.result_call_id !== null ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -312,7 +312,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes3.result_call_id === 1 || row.control_points.mes3.result_call_id === 3 ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yy')
+          default: () => row.control_points.mes3.result_call_id !== null ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -330,7 +330,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes6.result_call_id === 1 || row.control_points.mes6.result_call_id === 3 ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yy')
+          default: () => row.control_points.mes6.result_call_id !== null ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yy')
         }
       )
     }
@@ -348,7 +348,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes12.result_call_id === 1 || row.control_points.mes12.result_call_id === 3 ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yy')
+          default: () => row.control_points.mes12.result_call_id !== null ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yy')
         }
       )
     }
