@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {
   IconChevronLeft,
-  IconSquareRoundedPlus,
   IconEdit,
+  IconSquareRoundedPlus,
 } from '@tabler/icons-vue'
 import { format } from 'date-fns'
 import { NIcon } from 'naive-ui'
@@ -113,31 +113,12 @@ definePageMeta({
     <NGrid :cols="5" :x-gap="16">
       <NGi span="3">
         <NSpace vertical class="max-w-3xl" :size="16">
-          <NCard class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-            <NFlex class="absolute top-4 right-4">
-            </NFlex>
+          <NCard title="Персональная информация" class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
             <NButton class="absolute top-2 left-0 -translate-x-1/2 shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="useRouter().back()">
               <template #icon>
                 <NIcon :component="IconChevronLeft" />
               </template>
             </NButton>
-            <NAvatar round :size="120" class="font-bold text-3xl">
-              {{ pacient.data.fio[0] }}
-            </NAvatar>
-            <template #action>
-              <NFlex justify="space-between" align="center">
-                <NText class="text-lg font-bold">
-                  {{ pacient.data.fio }}
-                </NText>
-
-                <NText>
-                  #{{ pacient.data.id }}
-                </NText>
-              </NFlex>
-            </template>
-          </NCard>
-
-          <NCard title="Персональная информация" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
             <template #header-extra>
               <NButton text @click="showEdit = true">
                 <template #icon>
@@ -147,6 +128,14 @@ definePageMeta({
               </NButton>
             </template>
             <NList hoverable>
+              <NListItem>
+                <NGrid :cols="2">
+                  <NGi><NText>ФИО</NText></NGi>
+                  <NGi v-if="pacient.data.fio">
+                    <NText>{{ pacient.data.fio }}</NText>
+                  </NGi>
+                </NGrid>
+              </NListItem>
               <NListItem>
                 <NGrid :cols="2">
                   <NGi><NText>СНИЛС</NText></NGi>
@@ -265,7 +254,7 @@ definePageMeta({
           <NCard v-if="(auth.isAdmin || auth.isOperator) && pacient.data.disp != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
             <NList :show-divider="false">
               <NScrollbar>
-                <NListItem class="rounded" v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" :style="`backgroundColor: ${cp.control_point.controled_at != null ? '#7FE7C4' : ''}`">
+                <NListItem v-for="cp in pacient.data.disp.control_points" :key="cp.control_point.id" class="rounded" :style="`backgroundColor: ${cp.control_point.controled_at != null ? '#7FE7C4' : ''}`">
                   <NGrid cols="2" class="px-4">
                     <NGridItem class="flex items-center gap-x-1">
                       <NText class="font-bold">
