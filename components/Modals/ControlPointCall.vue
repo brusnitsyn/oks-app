@@ -114,6 +114,12 @@ const resultCall = computed({
 const shadowSelectedAnswers = ref([])
 const lastAnswerId = ref(null)
 
+for (const briefAnswer of Object.values(controlPoint.value.data.call.brief_answers)) {
+  const findShadow = model.value.call.brief_questions_answers.find(itm => itm.id === briefAnswer)
+  shadowSelectedAnswers.value.push(findShadow)
+  hasDisableAnswer(findShadow.id)
+}
+
 function hasDisableAnswer(answerId: number, questionId: number) {
   const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
   const containDisableAnswers = shadowSelectedAnswers.value.filter(itm => itm.disp_call_brief_question_id === lastAnswer.disp_call_brief_question_id)

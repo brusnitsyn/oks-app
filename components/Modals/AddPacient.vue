@@ -94,14 +94,14 @@ rules.value = {
         trigger: ['blur', 'change']
       }
     ],
-    complications_id: [
-      {
-        type: 'array',
-        required: true,
-        message: 'Осложнения обязательны!',
-        trigger: ['blur', 'change']
-      }
-    ],
+    // complications_id: [
+    //   {
+    //     type: 'array',
+    //     required: true,
+    //     message: 'Осложнения обязательны!',
+    //     trigger: ['blur', 'change']
+    //   }
+    // ],
     lek_pr_state_id: [
       {
         type: 'number',

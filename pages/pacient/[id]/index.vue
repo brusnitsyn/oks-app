@@ -107,7 +107,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="max-w-7xl h-full mx-auto px-4">
+  <div class="max-w-7xl h-full mx-auto px-4 xl:relative">
     <div class="flex flex-col items-center justify-center h-auto xl:h-full">
       <NGrid :cols="5" :x-gap="16" :y-gap="16" item-responsive responsive="screen">
         <NGi span="m:5 l:3">
