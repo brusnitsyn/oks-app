@@ -123,9 +123,10 @@ for (const briefAnswer of Object.values(controlPoint.value.data.call.brief_answe
 function hasDisableAnswer(answerId: number, questionId: number) {
   const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
   const containDisableAnswers = shadowSelectedAnswers.value.filter(itm => itm.disp_call_brief_question_id === lastAnswer.disp_call_brief_question_id)
-  const index = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true)
+  const containDisableQuestionIndex = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true)
+  const containDisableAnswersIndex = containDisableAnswers.findIndex(itm => itm.has_disable_answers === true)
 
-  if (index !== -1) {
+  if (containDisableQuestionIndex !== -1) {
     const disableOtherAnswers = shadowSelectedAnswers.value.filter(itm => itm.has_disable_other_answer === true)
     for (const disableOtherAnswer of disableOtherAnswers) {
       const chapter = controlPoint.value.data.call.brief.chapters.find(itm => itm.id === disableOtherAnswer.disp_call_brief_question_chapter_id)
@@ -148,6 +149,51 @@ function hasDisableAnswer(answerId: number, questionId: number) {
     const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true)
     for (const question of questionsToDisabled) {
       question.disabled = false
+    }
+  }
+  console.log(containDisableAnswersIndex)
+  if (containDisableAnswersIndex !== -1) {
+    const disableAnswers = shadowSelectedAnswers.value.filter(itm => itm.has_disable_answers === true)
+    for (const disableAnswer of disableAnswers) {
+      const chapter = controlPoint.value.data.call.brief.chapters.find(itm => itm.id === disableAnswer.disp_call_brief_question_chapter_id)
+      const questionsToDisable = chapter.questions.filter(itm => !(itm.id === disableAnswer.disp_call_brief_question_id))
+
+      let disabledTo = []
+
+      for (const question of questionsToDisable) {
+        const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.disp_call_brief_question_id === question.id - 1)
+        if (spliceIndex !== -1) {
+          shadowSelectedAnswers.value.splice(spliceIndex, 1)
+        }
+        if (disableAnswer.has_disable_answers) {
+          disabledTo = disableAnswer.disable_answer_ids
+          for (const ans of question.answers) {
+            if (disabledTo.length > 0 && disabledTo.includes(ans.id)) {
+              ans.disabled = true
+            }
+          }
+          model.value.call.brief_answers[question.id] = null
+        }
+      }
+    }
+  }
+  else {
+    const chapter = controlPoint.value.data.call.brief.chapters.find(itm => itm.id === lastAnswer.disp_call_brief_question_chapter_id)
+    const questionsToDisable = chapter.questions.filter(itm => !(itm.id === lastAnswer.disp_call_brief_question_id))
+
+    let enabledTo = []
+
+    for (const question of questionsToDisable) {
+      console.log(lastAnswer.enable_answer_ids)
+      if (lastAnswer.enable_answer_ids) {
+        enabledTo = lastAnswer.enable_answer_ids
+
+        for (const ans of question.answers) {
+          if (enabledTo.length > 0 && enabledTo.includes(ans.id)) {
+            ans.disabled = false
+          }
+        }
+      }
     }
   }
 }
@@ -224,7 +270,7 @@ function handleClose() {
                             {{ index + 1 }}. {{ question.question }}
                           </NText>
                           <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1 || question.disabled" :name="question.question" @update:value="answerId => onCheckBriefAnswer(chapter.id, answerId, question)">
-                            <NRadio v-for="answer in question.answers" :label="answer.answer" :value="answer.id" />
+                            <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                           </NRadioGroup>
                         </NSpace>
                       </NGridItem>
