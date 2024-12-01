@@ -94,7 +94,7 @@ rules.value = {
         trigger: ['blur', 'change']
       }
     ],
-    complications: [
+    complications_id: [
       {
         type: 'array',
         required: true,
@@ -230,8 +230,8 @@ function handleClose() {
                 v-model:value="model.disp.conco_diagnos_id"
               />
             </NFormItemGi>
-            <NFormItemGi span="2" label="Осложнения" path="disp.complications">
-              <SelectDiagnosComplication v-model:value="model.disp.complications" />
+            <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
+              <SelectDiagnosComplication v-model:value="model.disp.complications_id" />
             </NFormItemGi>
             <NFormItemGi label="Статус" path="disp.disp_state_id">
               <SelectDispStatus
