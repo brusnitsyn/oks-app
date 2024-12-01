@@ -108,10 +108,10 @@ definePageMeta({
 
 <template>
   <div class="max-w-7xl h-full mx-auto px-4">
-    <div class="flex flex-col items-center justify-center h-full">
-      <NGrid :cols="5" :x-gap="16">
-        <NGi span="3">
-          <NSpace vertical class="max-w-3xl" :size="16">
+    <div class="flex flex-col items-center justify-center h-auto xl:h-full">
+      <NGrid :cols="5" :x-gap="16" :y-gap="16" item-responsive responsive="screen">
+        <NGi span="m:5 l:3">
+          <NSpace vertical class="xl:max-w-3xl" :size="16">
             <NCard class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
               <template #action>
                 <NButton class="absolute top-2 left-0 -translate-x-1/2 shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="useRouter().back()">
@@ -213,7 +213,7 @@ definePageMeta({
             </NCard>
           </NSpace>
         </NGi>
-        <NGi span="2">
+        <NGi span="m:5 l:2">
           <NSpace vertical :size="16">
             <NCard title="Диспансерные наблюдения" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
               <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra>

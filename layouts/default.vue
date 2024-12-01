@@ -101,8 +101,8 @@ const userOptions = [
 </script>
 
 <template>
-  <NLayout class="relative h-screen max-h-screen">
-    <NLayout has-sider class="h-full sticky left-0 bottom-0 top-0 z-50 bg-transparent">
+  <NLayout class="relative h-screen">
+    <NLayout has-sider position="absolute" class="">
       <NLayoutSider
         collapse-mode="width"
         :collapsed-width="64"
@@ -150,9 +150,11 @@ const userOptions = [
           <!--          </NSpace> -->
         </NFlex>
       </NLayoutSider>
-      <div class="w-full mx-2 mr-4 pt-8 max-h-screen z-50">
-        <slot />
-      </div>
+      <NLayout class="w-full mx-2 mr-4 max-h-screen z-50 bg-transparent">
+        <div class="p-4 xl:pt-8 xl:px-0">
+          <slot />
+        </div>
+      </NLayout>
     </NLayout>
 
     <div class="absolute inset-y-0 inset-x-0">

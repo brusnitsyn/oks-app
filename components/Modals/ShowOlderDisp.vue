@@ -57,7 +57,7 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" :title="`(${format(new Date(model.begin_at), 'dd.MM.yyyy')} - ${format(new Date(model.end_at), 'dd.MM.yyyy')}) Диспансерное наблюдение`">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md min-h-[742px]" :title="`(${format(new Date(model.begin_at), 'dd.MM.yyyy')} - ${format(new Date(model.end_at), 'dd.MM.yyyy')}) Диспансерное наблюдение`">
     <NForm ref="formRef" :disabled="!auth.isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
       <NGrid cols="2" x-gap="8">
         <NFormItemGi span="2" label="Основной диагноз" path="main_diagnos_id">

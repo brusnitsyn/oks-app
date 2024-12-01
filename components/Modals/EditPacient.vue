@@ -186,7 +186,7 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Редактирование пациента">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md min-h-[742px]" title="Редактирование пациента">
     <NForm ref="formRef" :disabled="useSanctumAuth().isOperator" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
       <NTabs type="segment">
         <NTabPane display-directive="show" name="info" tab="Персональная информация">

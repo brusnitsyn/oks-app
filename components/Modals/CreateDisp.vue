@@ -69,7 +69,7 @@ function handleClose() {
 </script>
 
 <template>
-  <NModal v-model:show="show" :mask-closable="false" preset="card" class="w-2/5 min-h-[742px]" title="Добавить диспансерное наблюдение">
+  <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md min-h-[742px]" title="Добавить диспансерное наблюдение">
     <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
       <NGrid cols="2" x-gap="8">
         <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">

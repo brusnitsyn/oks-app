@@ -184,7 +184,7 @@ const defaultColumns = ref([
   {
     title: 'Дата поступления',
     key: 'receipt_at',
-    width: 120,
+    width: 95,
     align: 'center',
     render(row) {
       return h(
@@ -201,9 +201,8 @@ const defaultColumns = ref([
     key: 'fio',
     sorter: 'default',
     sortOrder: false,
-    width: 280,
+    width: 250,
     align: 'center',
-    fixed: 'left',
     render(row) {
       return h(
         AppLink,
@@ -219,6 +218,7 @@ const defaultColumns = ref([
   {
     title: 'Дата рождения',
     key: 'birth_at',
+    width: 90,
     align: 'center',
     render(row) {
       return h(
@@ -238,7 +238,7 @@ const defaultColumns = ref([
   },
   {
     title: 'Диспансерное\nнаблюдение',
-    width: 120,
+    width: 130,
     align: 'center',
     key: 'disp_status',
   },
@@ -250,7 +250,7 @@ const defaultColumns = ref([
   },
   {
     title: 'Дополнительное\nлечение',
-    width: 140,
+    width: 130,
     align: 'center',
     key: 'dop_heal',
     render(row) {
@@ -265,6 +265,7 @@ const defaultColumns = ref([
   },
   {
     title: '3-й день',
+    width: 70,
     key: 'day3',
     align: 'center',
     className: 'relative day3',
@@ -283,6 +284,7 @@ const defaultColumns = ref([
   },
   {
     title: '1 мес',
+    width: 70,
     key: 'mes1',
     align: 'center',
     className: 'relative mes1',
@@ -301,6 +303,7 @@ const defaultColumns = ref([
   },
   {
     title: '3 мес',
+    width: 70,
     key: 'mes3',
     className: 'relative mes3',
     align: 'center',
@@ -319,6 +322,7 @@ const defaultColumns = ref([
   },
   {
     title: '6 мес',
+    width: 70,
     key: 'mes6',
     className: 'relative mes6',
     align: 'center',
@@ -337,6 +341,7 @@ const defaultColumns = ref([
   },
   {
     title: '12 мес',
+    width: 70,
     key: 'mes12',
     className: 'relative mes12',
     align: 'center',
@@ -355,7 +360,7 @@ const defaultColumns = ref([
   },
   {
     title: 'Номер телефона',
-    width: 150,
+    width: 135,
     align: 'center',
     key: 'tel',
   },
@@ -563,6 +568,7 @@ useSeoMeta({
           :pagination="pagination"
           :loading="status === 'pending'"
           :row-props="rowProps"
+          :scroll-x="1576"
           :row-key="rowKey"
           :min-height="650"
           :max-height="650"
