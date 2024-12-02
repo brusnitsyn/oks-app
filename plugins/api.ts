@@ -20,6 +20,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
+      if (Array.isArray(headers)) {
+        headers.push(['Accept', `application/json`])
+      }
+      else if (headers instanceof Headers) {
+        headers.set('Accept', `application/json`)
+      }
+      else {
+        headers.Accept = `application/json`
+      }
       if (useCookie('token').value) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
