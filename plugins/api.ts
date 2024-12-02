@@ -1,8 +1,6 @@
 import { useRequestURL } from 'nuxt/app'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig()
-  const cookieToken = useCookie('token')
   const url = useRequestURL().host
   let baseURL = 'http://127.0.0.1:8000/api'
   switch (url) {
@@ -16,19 +14,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       baseURL = 'http://46.16.9.130:49022/'
       break
   }
-  console.log(useCookie('token').value)
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
-      if (Array.isArray(headers)) {
-        headers.push(['Accept', `application/json`])
-      }
-      else if (headers instanceof Headers) {
-        headers.set('Accept', `application/json`)
-      }
-      else {
-        headers.Accept = `application/json`
-      }
       if (useCookie('token').value) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
