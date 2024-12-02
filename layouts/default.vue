@@ -8,7 +8,8 @@ import {
 } from '@tabler/icons-vue'
 import { NuxtLink } from '#components'
 
-const { user } = useSanctumAuth()
+const { user, refreshUser } = useSanctumAuth()
+await refreshUser()
 const route = useRoute()
 
 const activeRoute = computed(() => {
