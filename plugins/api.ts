@@ -17,6 +17,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       break
   }
   const api = $fetch.create({
+    baseURL,
     onRequest({ request, options, error }) {
       // console.log(options.baseURL)
       const token = useCookie('token')
