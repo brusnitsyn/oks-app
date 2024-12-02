@@ -54,7 +54,7 @@ const searchPacientValue = ref(useRoute().query.search_value ?? '')
 const currentQuery = computed(() => new URLSearchParams(useRoute().query).toString())
 
 const { $api } = useNuxtApp()
-const { data, refresh, status } = await useAPI(`/api/pacient?${currentQuery.value}`, {
+const { data, refresh, status } = await useAsyncData('pacients', () => $api(`/api/pacient?${currentQuery.value}`), {
   watch: [currentQuery]
 })
 
