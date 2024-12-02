@@ -1,30 +1,29 @@
 import { useRequestURL } from 'nuxt/app'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const url = useRequestURL()
+
+  const ip = url.hostname
+  let baseURL = 'http://46.16.9.130:49022/'
+  // switch (ip) {
+  //   case '127.0.0.1':
+  //     baseURL = 'http://46.16.9.130:49022/'
+  //     break
+  //   case '10.32.0.204':
+  //     baseURL = 'http://10.32.0.204:82/'
+  //     break
+  //   case '46.16.9.130':
+  //     baseURL = 'http://46.16.9.130:49022/'
+  //     break
+  // }
   const api = $fetch.create({
+    baseURL,
     onRequest({ request, options, error }) {
-      const url = useRequestURL()
-
-      const ip = url.hostname
-      let baseURL = 'http://46.16.9.130:49022/'
-      switch (ip) {
-        case '127.0.0.1':
-          baseURL = 'http://46.16.9.130:49022/'
-          break
-        case '10.32.0.204':
-          baseURL = 'http://10.32.0.204:82/'
-          break
-        case '46.16.9.130':
-          baseURL = 'http://46.16.9.130:49022/'
-          break
-      }
-
-      options.baseURL = baseURL
-
+      // console.log(options.baseURL)
       const token = useCookie('token')
       const accessToken = token.value
       // console.log(accessToken)
-      if (accessToken) {
+      if (useCookie('token').value) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
         if (Array.isArray(headers)) {
