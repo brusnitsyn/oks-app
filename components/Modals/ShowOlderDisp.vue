@@ -73,32 +73,24 @@ function handleClose() {
         <NFormItemGi span="2" label="Осложнения" path="complications_id">
           <SelectDiagnosComplication v-model:value="model.complications_id" :disabled="!useSanctumAuth().isAdmin" />
         </NFormItemGi>
-        <NFormItemGi label="Статус" path="disp_state_id">
-          <SelectDispStatus
-            v-model:value="model.disp_state_id"
+        <!--        <NFormItemGi label="Статус" path="disp_state_id"> -->
+        <!--          <SelectDispStatus -->
+        <!--            v-model:value="model.disp_state_id" -->
+        <!--          /> -->
+        <!--        </NFormItemGi> -->
+        <NFormItemGi label="Дата взятия на диспансерный учет" path="begin_at">
+          <SelectDatePicker
+            v-model:value="model.begin_at"
           />
         </NFormItemGi>
-        <NFormItemGi v-if="model.disp_state_id !== null && model.disp_state_id === 2" label="Причина снятия" path="disp_reason_close_id">
+        <NFormItemGi label="Дата выбытия из регистра" path="end_at">
+          <SelectDatePicker
+            v-model:value="model.end_at"
+          />
+        </NFormItemGi>
+        <NFormItemGi label="Причина выбытия из регистра" path="disp_reason_close_id">
           <SelectReasonClose
             v-model:value="model.disp_reason_close_id"
-          />
-        </NFormItemGi>
-        <NFormItemGi label="Дата поступления на учет" path="begin_at">
-          <NDatePicker
-            v-model:value="model.begin_at"
-            placeholder=""
-            format="dd.MM.yyyy"
-            type="date"
-            class="w-full"
-          />
-        </NFormItemGi>
-        <NFormItemGi label="Дата снятия с учета" path="disp.end_at">
-          <NDatePicker
-            v-model:value="model.end_at"
-            placeholder=""
-            format="dd.MM.yyyy"
-            type="date"
-            class="w-full"
           />
         </NFormItemGi>
       </NGrid>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { format } from 'date-fns'
-
 const props = defineProps(['pacientId', 'refresh'])
 
 const show = defineModel('show')
@@ -17,14 +15,14 @@ rules.value = {
       trigger: ['blur', 'change']
     }
   ],
-  conco_diagnos_id: [
-    {
-      type: 'array',
-      required: true,
-      message: 'Сопутствующий диагноз обязателен!',
-      trigger: ['blur', 'change']
-    }
-  ],
+  // conco_diagnos_id: [
+  //   {
+  //     type: 'array',
+  //     required: true,
+  //     message: 'Сопутствующий диагноз обязателен!',
+  //     trigger: ['blur', 'change']
+  //   }
+  // ],
   // complications_id: [
   //   {
   //     type: 'array',
@@ -62,7 +60,7 @@ rules.value = {
       required: true,
       validator(rule, value) {
         if (!value) {
-          return new Error('Дата снятия с учета обязательна!')
+          return new Error('Дата выбытия из регистра обязательна!')
         }
       },
       trigger: ['blur', 'input']
@@ -83,15 +81,18 @@ rules.value = {
     {
       type: 'number',
       required: true,
-      message: 'Причина снятия с учета обязательна!',
+      message: 'Причина выбытия из регистра обязательна!',
       trigger: ['blur', 'change']
     }
   ],
 }
 
+const loading = ref(false)
+
 function handleSubmit() {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
+      loading.value = true
       const { data, status } = await useAPI(`/api/pacient/${props.pacientId}/disp`, {
         method: 'POST',
         body: model.value,
@@ -99,6 +100,7 @@ function handleSubmit() {
 
       if (status.value === 'success') {
         show.value = false
+        loading.value = false
         props.refresh()
         reset()
       }
@@ -136,10 +138,10 @@ function handleClose() {
             v-model:value="model.disp_state_id"
           />
         </NFormItemGi>
-        <NFormItemGi />
-        <NFormItemGi label="Дата поступления на учет" path="begin_at">
+        <NFormItemGi v-if="model.disp_state_id === 1" label="Дата взятия на диспансерный учет" path="begin_at">
           <SelectDatePicker
             v-model:value="model.begin_at"
+            :disabled="!useSanctumAuth().isAdmin"
           />
         </NFormItemGi>
         <NFormItemGi label="Лекарственные препараты" path="lek_pr_state_id">
@@ -147,6 +149,17 @@ function handleClose() {
         </NFormItemGi>
         <NFormItemGi label="Необходимость дополнительного лечения" path="disp_dop_health_id">
           <SelectDispDopHeal v-model:value="model.disp_dop_health_id" />
+        </NFormItemGi>
+        <NFormItemGi span="2" />
+        <NFormItemGi v-if="model.disp_state_id === 2" label="Дата выбытия из регистра" path="end_at">
+          <SelectDatePicker
+            v-model:value="model.end_at"
+          />
+        </NFormItemGi>
+        <NFormItemGi v-if="model.disp_state_id === 2" label="Причина выбытия из регистра" path="disp_reason_close_id">
+          <SelectReasonClose
+            v-model:value="model.disp_reason_close_id"
+          />
         </NFormItemGi>
       </NGrid>
     </NForm>
@@ -156,7 +169,7 @@ function handleClose() {
         <NButton secondary @click="handleClose">
           Отмена
         </NButton>
-        <NButton type="primary" :loading="pending" :disabled="pending || !edited" attr-type="submit" @click="handleSubmit">
+        <NButton type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
           Добавить наблюдение
         </NButton>
       </NFlex>

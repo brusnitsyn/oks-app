@@ -62,9 +62,13 @@ rules.value = {
   ],
   discharge_at: [
     {
-      type: 'number',
       required: true,
-      message: 'Дата поступления обязательна!',
+      validator(rule, value) {
+        if (!value) {
+          return new Error('Дата выписки из стационара обязательна!')
+        }
+      },
+      message: 'Дата выписки из стационара обязательна!',
       trigger: ['blur', 'change']
     }
   ],
@@ -213,21 +217,19 @@ function handleClose() {
                 v-model:value="model.birth_at"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата поступления" path="receipt_at">
+            <NFormItemGi />
+            <NFormItemGi label="Дата поступления в стационар" path="receipt_at">
               <SelectDatePicker
                 v-model:value="model.receipt_at"
                 :disabled="!useSanctumAuth().isAdmin"
               />
             </NFormItemGi>
-            <!--            <NFormItemGi label="Дата выписки" path="discharge_at"> -->
-            <!--              <NDatePicker -->
-            <!--                v-model:value="model.discharge_at" -->
-            <!--                placeholder="28.12.2024" -->
-            <!--                format="dd.MM.yyyy" -->
-            <!--                type="date" -->
-            <!--                class="w-full" -->
-            <!--              /> -->
-            <!--            </NFormItemGi> -->
+            <NFormItemGi label="Дата выписки из стационара" path="discharge_at">
+              <SelectDatePicker
+                v-model:value="model.discharge_at"
+                :disabled="!useSanctumAuth().isAdmin"
+              />
+            </NFormItemGi>
           </NGrid>
         </NTabPane>
         <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Информация по заболеванию">
@@ -252,7 +254,7 @@ function handleClose() {
                 v-model:value="model.disp.disp_state_id"
               />
             </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата поступления на учет" path="disp.begin_at">
+            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата взятия на диспансерный учет" path="disp.begin_at">
               <SelectDatePicker
                 v-model:value="model.disp.begin_at"
                 :disabled="!useSanctumAuth().isAdmin"

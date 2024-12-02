@@ -190,9 +190,12 @@ definePageMeta({
                     <NGi><NText>Сопутствующий диагноз</NText></NGi>
                     <NGi>
                       <NSpace vertical :size="0">
-                        <template v-for="conco in pacient.data.disp.conco_diagnos">
+                        <template v-for="conco in pacient.data.disp.conco_diagnos" v-if="pacient.data.disp.conco_diagnos.length">
                           <NText>{{ conco.name }}</NText>
                         </template>
+                        <NText v-else>
+                          —
+                        </NText>
                       </NSpace>
                     </NGi>
                   </NGrid>
@@ -202,9 +205,12 @@ definePageMeta({
                     <NGi><NText>Осложнения</NText></NGi>
                     <NGi>
                       <NSpace vertical :size="0">
-                        <template v-for="comp in pacient.data.disp.complications">
+                        <template v-for="comp in pacient.data.disp.complications" v-if="pacient.data.disp.complications.length">
                           <NText>{{ comp.name }}</NText>
                         </template>
+                        <NText v-else>
+                          —
+                        </NText>
                       </NSpace>
                     </NGi>
                   </NGrid>
