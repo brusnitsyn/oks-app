@@ -85,14 +85,14 @@ rules.value = {
         trigger: ['blur', 'change']
       }
     ],
-    conco_diagnos_id: [
-      {
-        type: 'array',
-        required: true,
-        message: 'Сопутствующий диагноз обязателен!',
-        trigger: ['blur', 'change']
-      }
-    ],
+    // conco_diagnos_id: [
+    //   {
+    //     type: 'array',
+    //     required: true,
+    //     message: 'Сопутствующий диагноз обязателен!',
+    //     trigger: ['blur', 'change']
+    //   }
+    // ],
     // complications_id: [
     //   {
     //     type: 'array',
@@ -130,7 +130,7 @@ rules.value = {
         required: true,
         validator(rule, value) {
           if (!value) {
-            return new Error('Дата снятия с учета обязательна!')
+            return new Error('Дата выбытия из регистра обязательна!')
           }
         },
         trigger: ['blur', 'input']
@@ -151,7 +151,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Причина снятия с учета обязательна!',
+        message: 'Причина выбытия из регистра обязательна!',
         trigger: ['blur', 'change']
       }
     ],
@@ -161,9 +161,9 @@ rules.value = {
 const loading = ref(false)
 
 function handleSubmit() {
-  loading.value = true
   formRef.value?.validate(async (errors) => {
     if (!errors) {
+      loading.value = true
       const { data, status } = await useAPI(`/api/pacient`, {
         method: 'POST',
         body: model.value,
@@ -230,7 +230,7 @@ function handleClose() {
             <!--            </NFormItemGi> -->
           </NGrid>
         </NTabPane>
-        <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Диспансерное наблюдение">
+        <NTabPane v-if="model.disp" display-directive="show" name="disp" tab="Информация по заболеванию">
           <NGrid cols="2" x-gap="8">
             <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
               <SelectDiagnosMain
@@ -252,20 +252,21 @@ function handleClose() {
                 v-model:value="model.disp.disp_state_id"
               />
             </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина снятия" path="disp.disp_reason_close_id">
-              <SelectReasonClose
-                v-model:value="model.disp.disp_reason_close_id"
-              />
-            </NFormItemGi>
-            <NFormItemGi label="Дата поступления на учет" path="disp.begin_at">
+            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата поступления на учет" path="disp.begin_at">
               <SelectDatePicker
                 v-model:value="model.disp.begin_at"
                 :disabled="!useSanctumAuth().isAdmin"
               />
             </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата снятия с учета" path="disp.end_at">
+            <NFormItemGi span="2" />
+            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата выбытия из регистра" path="disp.end_at">
               <SelectDatePicker
                 v-model:value="model.disp.end_at"
+              />
+            </NFormItemGi>
+            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина выбытия из регистра" path="disp.disp_reason_close_id">
+              <SelectReasonClose
+                v-model:value="model.disp.disp_reason_close_id"
               />
             </NFormItemGi>
           </NGrid>

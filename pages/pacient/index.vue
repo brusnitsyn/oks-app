@@ -178,13 +178,17 @@ const defaultColumns = ref([
   {
     title: '№\nп/п',
     key: 'id',
-    width: 50,
+    width: 70,
+    sorter: 'default',
+    sortOrder: false,
     align: 'center'
   },
   {
     title: 'Дата поступления',
     key: 'receipt_at',
-    width: 95,
+    width: 110,
+    sorter: 'default',
+    sortOrder: false,
     align: 'center',
     render(row) {
       return h(
@@ -201,7 +205,7 @@ const defaultColumns = ref([
     key: 'fio',
     sorter: 'default',
     sortOrder: false,
-    width: 250,
+    width: 220,
     align: 'center',
     render(row) {
       return h(
@@ -218,7 +222,9 @@ const defaultColumns = ref([
   {
     title: 'Дата рождения',
     key: 'birth_at',
-    width: 90,
+    width: 110,
+    sorter: 'default',
+    sortOrder: false,
     align: 'center',
     render(row) {
       return h(
@@ -232,7 +238,7 @@ const defaultColumns = ref([
   },
   {
     title: 'Диагноз',
-    width: 80,
+    width: 90,
     align: 'center',
     key: 'ds',
   },
@@ -360,7 +366,7 @@ const defaultColumns = ref([
   },
   {
     title: 'Номер телефона',
-    width: 135,
+    width: 140,
     align: 'center',
     key: 'tel',
   },
