@@ -16,7 +16,7 @@ const id = Number.parseInt(useRoute().params.id as string)
 
 await useAsyncData('control-point', () => $api('/api/control-point'))
 
-const { data: pacient, refresh } = await useAsyncData(`pacient-id`, () => $api(`/api/pacient/${id}`))
+const { data: pacient, refresh } = await useAPI(`/api/pacient/${id}`)
 
 const formatDate = 'dd.MM.yyyy'
 

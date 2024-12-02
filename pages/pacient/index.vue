@@ -54,7 +54,7 @@ const searchPacientValue = ref(useRoute().query.search_value ?? '')
 const currentQuery = computed(() => new URLSearchParams(useRoute().query).toString())
 
 const { $api } = useNuxtApp()
-const { data, refresh, status } = await useAsyncData('pacient', () => $api(`/api/pacient?${currentQuery.value}`), {
+const { data, refresh, status } = await useAPI(`/api/pacient?${currentQuery.value}`, {
   watch: [currentQuery]
 })
 
@@ -579,7 +579,7 @@ useSeoMeta({
           :min-height="650"
           :max-height="650"
           :row-class-name="rowClassName"
-          :columns="columns" :data="(data as responseData).data.pacients"
+          :columns="columns" :data="(data as responseData).data?.pacients"
           @update:sorter="handleSorterChange"
           @update:checked-row-keys="handleCheck"
         />
