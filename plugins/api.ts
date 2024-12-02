@@ -6,13 +6,13 @@ export default defineNuxtPlugin((nuxtApp) => {
       const url = useRequestURL()
       const ip = url.host
       switch (ip) {
-        case '127.0.0.1:3000':
+        case '127.0.0.1':
           options.baseURL = 'http://127.0.0.1:8000/'
           break
-        case '10.32.0.204:31':
+        case '10.32.0.204':
           options.baseURL = 'http://10.32.0.204:82/'
           break
-        case '46.16.9.130:49021':
+        case '46.16.9.130':
           options.baseURL = 'http://46.16.9.130:49022/'
           break
       }
