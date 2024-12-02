@@ -93,9 +93,9 @@ const rowOptions = ref([
 function getClassForRowCallResult(result_call_id) {
   switch (result_call_id) {
     case 1:
-    case 3:
       return 'bg-green-300 mx-3'
     case 2:
+    case 3:
       return 'bg-transparent mx-3'
   }
 }
@@ -283,7 +283,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.day3.result_call_id)} ${getClassForRowControlOption(row.control_points.day3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.day3.result_call_id !== null ? '' : format(new Date(row.control_points.day3.control_at), 'dd.MM.yy')
+          default: () => (row.control_points.day3.result_call_id !== null && (row.control_points.day3.result_call_id === 1 || row.control_points.day3.result_call_id === 3)) ? '' : row.control_points.day3.result_call_id === 2 ? format(new Date(row.control_points.day3.control_at), 'dd.MM') : format(new Date(row.control_points.day3.control_at), 'dd.MM.yyyy')
         }
       )
     }
@@ -302,7 +302,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes1.result_call_id)} ${getClassForRowControlOption(row.control_points.mes1.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes1.result_call_id !== null ? '' : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yy')
+          default: () => (row.control_points.mes1.result_call_id !== null && (row.control_points.mes1.result_call_id === 1 || row.control_points.mes1.result_call_id === 3)) ? '' : row.control_points.mes1.result_call_id === 2 ? format(new Date(row.control_points.mes1.control_at), 'dd.MM') : format(new Date(row.control_points.mes1.control_at), 'dd.MM.yyyy')
         }
       )
     }
@@ -321,7 +321,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes3.result_call_id)} ${getClassForRowControlOption(row.control_points.mes3.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes3.result_call_id !== null ? '' : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yy')
+          default: () => (row.control_points.mes3.result_call_id !== null && (row.control_points.mes3.result_call_id === 1 || row.control_points.mes3.result_call_id === 3)) ? '' : row.control_points.mes3.result_call_id === 2 ? format(new Date(row.control_points.mes3.control_at), 'dd.MM') : format(new Date(row.control_points.mes3.control_at), 'dd.MM.yyyy')
         }
       )
     }
@@ -340,7 +340,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.control_points.mes6.result_call_id)} ${getClassForRowControlOption(row.control_points.mes6.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes6.result_call_id !== null ? '' : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yy')
+          default: () => (row.control_points.mes6.result_call_id !== null && (row.control_points.mes6.result_call_id === 1 || row.control_points.mes6.result_call_id === 3)) ? '' : row.control_points.mes6.result_call_id === 2 ? format(new Date(row.control_points.mes6.control_at), 'dd.MM') : format(new Date(row.control_points.mes6.control_at), 'dd.MM.yyyy')
         }
       )
     }
@@ -359,7 +359,7 @@ const defaultColumns = ref([
           class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.control_points.mes12.result_call_id)} ${getClassForRowControlOption(row.control_points.mes12.control_point_option_id)}`
         },
         {
-          default: () => row.control_points.mes12.result_call_id !== null ? '' : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yy')
+          default: () => (row.control_points.mes12.result_call_id !== null && (row.control_points.mes12.result_call_id === 1 || row.control_points.mes12.result_call_id === 3)) ? '' : row.control_points.mes12.result_call_id === 2 ? format(new Date(row.control_points.mes12.control_at), 'dd.MM') : format(new Date(row.control_points.mes12.control_at), 'dd.MM.yyyy')
         }
       )
     }
