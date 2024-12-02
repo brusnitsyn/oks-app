@@ -23,8 +23,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     onRequest({ request, options, error }) {
       console.log(ip)
       console.log(request)
-      console.log(token)
       const token = useCookie('token')
+      console.log(token)
       const accessToken = token.value
       if (accessToken) {
         options.mode = options.mode ?? 'cors'
