@@ -22,6 +22,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     baseURL,
     onRequest({ request, options, error }) {
       console.log(ip)
+      console.log(request)
+      console.log(token)
       const token = useCookie('token')
       const accessToken = token.value
       if (accessToken) {
