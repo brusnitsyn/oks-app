@@ -3,8 +3,9 @@ import { useRequestURL } from 'nuxt/app'
 export default defineNuxtPlugin((nuxtApp) => {
   const api = $fetch.create({
     onRequest({ request, options, error }) {
-      const url = useRequestURL().host
-      switch (url) {
+      const url = useRequestURL()
+      const ip = url.host
+      switch (ip) {
         case '127.0.0.1:3000':
           options.baseURL = 'http://127.0.0.1:8000/'
           break
@@ -15,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           options.baseURL = 'http://46.16.9.130:49022/'
           break
       }
-      console.log(options.baseURL)
+      console.log(ip)
       const token = useCookie('token')
       const accessToken = token.value
       if (accessToken) {
