@@ -59,35 +59,35 @@ const menuOptions = [
   // },
 ]
 
-function renderUserInfo() {
-  return h(
-    'div',
-    {
-      class: 'flex items-center justify-start py-1 px-4'
-    },
-    () => [
-      h(NAvatar, {
-        round: true,
-        class: 'mr-3',
-      }, { default: () => user.value.data.fio }),
-      h('div', null, [
-        h('div', null, [
-          h(NText, { depth: 0 }, { default: () => user.value.fio })
-        ]),
-        h('div', null, [
-          h(NText, { depth: 3 }, { default: () => user.value.login })
-        ])
-      ])
-    ]
-  )
-}
+// function renderUserInfo() {
+//   return h(
+//     'div',
+//     {
+//       class: 'flex items-center justify-start py-1 px-4'
+//     },
+//     () => [
+//       h(NAvatar, {
+//         round: true,
+//         class: 'mr-3',
+//       }, { default: () => user.value.fio }),
+//       h('div', null, [
+//         h('div', null, [
+//           h(NText, { depth: 0 }, { default: () => user.value.fio })
+//         ]),
+//         h('div', null, [
+//           h(NText, { depth: 3 }, { default: () => user.value.login })
+//         ])
+//       ])
+//     ]
+//   )
+// }
 
 const userOptions = [
-  {
-    key: 'user',
-    type: 'render',
-    render: renderUserInfo
-  },
+  // {
+  //   key: 'user',
+  //   type: 'render',
+  //   render: renderUserInfo
+  // },
   {
     key: 'header-divider',
     type: 'divider'
@@ -121,14 +121,14 @@ const userOptions = [
                 <template #default>
                   <NFlex align="center" class="pl-1">
                     <NAvatar :size="48" circle>
-                      {{ user.data.fio[0] }}
+                      {{ user.data?.fio[0] }}
                     </NAvatar>
                     <NFlex vertical justify="center" :size="2">
                       <NText class="text-start font-semibold">
-                        {{ user.data.fio }}
+                        {{ user.data?.fio }}
                       </NText>
                       <NText class="text-start">
-                        {{ user.data.login }}
+                        {{ user.data?.login }}
                       </NText>
                     </NFlex>
                   </NFlex>
