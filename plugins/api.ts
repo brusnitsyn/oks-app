@@ -17,26 +17,29 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
-      if (useCookie('token').value) {
+      const token = useCookie('token')
+      const accessToken = token.value
+      if (accessToken) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
         if (Array.isArray(headers)) {
-          headers.push(['Authorization', `Bearer ${useCookie('token').value}`])
+          headers.push(['Authorization', `Bearer ${token.value}`])
           headers.push(['Accept', `application/json`])
         }
         else if (headers instanceof Headers) {
-          headers.set('Authorization', `Bearer ${useCookie('token').value}`)
+          headers.set('Authorization', `Bearer ${token.value}`)
           headers.set('Accept', `application/json`)
         }
         else {
-          headers.Authorization = `Bearer ${useCookie('token').value}`
+          headers.Authorization = `Bearer ${token.value}`
           headers.Accept = `application/json`
         }
       }
     },
     async onResponseError({ response }) {
+      const token = useCookie('token')
       if (response.status === 401) {
-        useCookie('token').value = null
+        token.value = null
         await nuxtApp.runWithContext(() => navigateTo('/auth'))
       }
     }
