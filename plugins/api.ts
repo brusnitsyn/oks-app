@@ -16,10 +16,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       baseURL = 'http://46.16.9.130:49022/'
       break
   }
+  console.log(useCookie('token').value)
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
-      console.log(useCookie('token').value)
       if (useCookie('token').value) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
