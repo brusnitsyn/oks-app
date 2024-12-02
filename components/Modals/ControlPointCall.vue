@@ -170,9 +170,9 @@ function hasDisableAnswer(answerId: number, questionId: number) {
           for (const ans of question.answers) {
             if (disabledTo.length > 0 && disabledTo.includes(ans.id)) {
               ans.disabled = true
+              model.value.call.brief_answers[question.id] = null
             }
           }
-          model.value.call.brief_answers[question.id] = null
         }
       }
     }
