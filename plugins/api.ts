@@ -5,17 +5,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const ip = url.hostname
   let baseURL = 'http://46.16.9.130:49022/'
-  // switch (ip) {
-  //   case '127.0.0.1':
-  //     baseURL = 'http://46.16.9.130:49022/'
-  //     break
-  //   case '10.32.0.204':
-  //     baseURL = 'http://10.32.0.204:82/'
-  //     break
-  //   case '46.16.9.130':
-  //     baseURL = 'http://46.16.9.130:49022/'
-  //     break
-  // }
+  switch (ip) {
+    case '127.0.0.1':
+      baseURL = 'http://127.0.0.1:8001/'
+      break
+    case '10.32.0.204':
+      baseURL = 'http://10.32.0.204:82/'
+      break
+    case '46.16.9.130':
+      baseURL = 'http://46.16.9.130:49022/'
+      break
+  }
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
@@ -23,7 +23,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       const token = useCookie('token')
       const accessToken = token.value
       // console.log(accessToken)
-      if (useCookie('token').value) {
+      if (accessToken) {
         options.mode = options.mode ?? 'cors'
         const headers = options.headers ||= {}
         if (Array.isArray(headers)) {

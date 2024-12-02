@@ -1,5 +1,5 @@
 export default defineNuxtPlugin(async (nitroApp) => {
-  const { refreshUser } = useSanctumAuth()
+  const auth = useSanctumAuth()
   const cookieToken = useCookie('token')
-  if (cookieToken.value) { await refreshUser() }
+  if (cookieToken.value) { await auth.refreshUser() }
 })
