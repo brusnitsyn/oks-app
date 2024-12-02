@@ -89,7 +89,7 @@ definePageMeta({
     </NTabs>
   </NCard>
   <div class="absolute left-10 top-8">
-    <NImage src="/logo-short.svg" />
+    <NImage src="/logo-short.svg" :preview-disabled="true" />
   </div>
 </template>
 
