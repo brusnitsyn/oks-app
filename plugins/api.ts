@@ -17,7 +17,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       break
   }
   const api = $fetch.create({
-    baseURL,
     onRequest({ request, options, error }) {
       // console.log(options.baseURL)
       const token = useCookie('token')
@@ -39,6 +38,8 @@ export default defineNuxtPlugin((nuxtApp) => {
           headers.Accept = `application/json`
         }
       }
+
+      console.log(error)
     },
     async onResponseError({ response }) {
       const token = useCookie('token')
@@ -46,6 +47,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         token.value = null
         await nuxtApp.runWithContext(() => navigateTo('/auth'))
       }
+
+      console.log(response)
     }
   })
 
