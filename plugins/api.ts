@@ -14,6 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       baseURL = 'http://46.16.9.130:49022/'
       break
   }
+  console.log(baseURL)
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
