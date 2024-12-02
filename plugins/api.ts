@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       break
     case '46.16.9.130':
     case '46.16.9.130:49021':
-      baseURL = 'http://10.32.0.204:82/'
+      baseURL = 'http://46.16.9.130:49022/'
       break
   }
   const api = $fetch.create({
