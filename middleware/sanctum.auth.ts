@@ -7,5 +7,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return navigateTo('/auth', { replace: true })
   }
 
-  await auth.refreshUser()
+  // await auth.refreshUser()
 })
