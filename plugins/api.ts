@@ -5,7 +5,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   const cookieToken = useCookie('token')
   const url = useRequestURL().host
   let baseURL = 'http://127.0.0.1:8000/api'
-  console.log(url)
   switch (url) {
     case '127.0.0.1:3000':
       baseURL = 'http://127.0.0.1:8000/'
@@ -20,21 +19,19 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = $fetch.create({
     baseURL,
     onRequest({ request, options, error }) {
-      if (useCookie('token').value) {
-        options.mode = options.mode ?? 'cors'
-        const headers = options.headers ||= {}
-        if (Array.isArray(headers)) {
-          headers.push(['Authorization', `Bearer ${useCookie('token').value}`])
-          headers.push(['Accept', `application/json`])
-        }
-        else if (headers instanceof Headers) {
-          headers.set('Authorization', `Bearer ${useCookie('token').value}`)
-          headers.set('Accept', `application/json`)
-        }
-        else {
-          headers.Authorization = `Bearer ${useCookie('token').value}`
-          headers.Accept = `application/json`
-        }
+      options.mode = options.mode ?? 'cors'
+      const headers = options.headers ||= {}
+      if (Array.isArray(headers)) {
+        headers.push(['Authorization', `Bearer ${useCookie('token').value}`])
+        headers.push(['Accept', `application/json`])
+      }
+      else if (headers instanceof Headers) {
+        headers.set('Authorization', `Bearer ${useCookie('token').value}`)
+        headers.set('Accept', `application/json`)
+      }
+      else {
+        headers.Authorization = `Bearer ${useCookie('token').value}`
+        headers.Accept = `application/json`
       }
     },
     async onResponseError({ response }) {
