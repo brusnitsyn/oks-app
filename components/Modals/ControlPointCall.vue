@@ -216,13 +216,13 @@ watch(shadowSelectedAnswers.value, (newValue) => {
   const hasSendSmp = newValue.findIndex(itm => itm.has_send_smp === true)
   if (hasSendSmp !== -1) {
     model.value.control_point.control_point_option_id = 6
-
     return
   }
 
   const hasSendDoctor = newValue.findIndex(itm => itm.has_send_doctor === true)
   if (hasSendDoctor !== -1) {
     model.value.control_point.control_point_option_id = 5
+    return
   }
 
   const hasAttention = newValue.findIndex(itm => itm.has_attention === true)
