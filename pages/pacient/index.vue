@@ -545,7 +545,7 @@ useSeoMeta({
     </div>
 
     <NSpace vertical>
-      <NFlex justify="space-between" align="center">
+      <NSpace vertical>
         <n-input-group class="max-w-[520px]">
           <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
           <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
@@ -554,16 +554,18 @@ useSeoMeta({
             </template>
           </NButton>
         </n-input-group>
-        <AppLegend />
-        <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
-          <NButton strong secondary>
-            <template #icon>
-              <NIcon :component="IconLayoutColumns" />
-            </template>
-            Отображение столбцов
-          </NButton>
-        </NPopselect>
-      </NFlex>
+        <NFlex justify="space-between" align="center" class="py-[6px]">
+          <AppLegend />
+          <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
+            <NButton strong secondary>
+              <template #icon>
+                <NIcon :component="IconLayoutColumns" />
+              </template>
+              Отображение столбцов
+            </NButton>
+          </NPopselect>
+        </NFlex>
+      </NSpace>
 
       <ClientOnly>
         <NDataTable
