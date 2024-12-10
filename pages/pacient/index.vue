@@ -545,27 +545,25 @@ useSeoMeta({
     </div>
 
     <NSpace vertical>
-      <NSpace vertical>
-        <NFlex justify="space-between" />
-        <NFlex justify="space-between" align="center">
-          <n-input-group class="max-w-[520px]">
-            <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
-            <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
-              <template #icon>
-                <IconSearch />
-              </template>
-            </NButton>
-          </n-input-group>
-          <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
-            <NButton strong secondary>
-              <template #icon>
-                <NIcon :component="IconLayoutColumns" />
-              </template>
-              Отображение столбцов
-            </NButton>
-          </NPopselect>
-        </NFlex>
-      </NSpace>
+      <NFlex justify="space-between" align="center">
+        <n-input-group class="max-w-[520px]">
+          <n-input v-model:value="searchPacientValue" :disabled="status === 'pending'" size="large" placeholder="Поиск по ФИО" @keydown.enter.prevent="searchPacient" />
+          <NButton :disabled="status === 'pending'" size="large" secondary @click="searchPacient">
+            <template #icon>
+              <IconSearch />
+            </template>
+          </NButton>
+        </n-input-group>
+        <AppLegend />
+        <NPopselect v-model:value="storageActiveCols" scrollable multiple :options="settingColumns" @update:value="(value, option) => updateColumns(value, option)">
+          <NButton strong secondary>
+            <template #icon>
+              <NIcon :component="IconLayoutColumns" />
+            </template>
+            Отображение столбцов
+          </NButton>
+        </NPopselect>
+      </NFlex>
 
       <ClientOnly>
         <NDataTable
