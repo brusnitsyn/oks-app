@@ -12,7 +12,17 @@ const { user, refreshUser } = useSanctumAuth()
 await refreshUser()
 const route = useRoute()
 
+const characterView = ref(false)
+const heartView = ref(false)
+
 const activeRoute = computed(() => {
+  if (route.name === 'pacient-id') {
+    characterView.value = true
+    heartView.value = false
+  } else {
+    characterView.value = false
+    heartView.value = true
+  }
   if (route.path.includes('/', 1)) { return route.path.substring(route.path.indexOf('/'), route.path.indexOf('/', 1)) }
   else { return route.path }
 })
@@ -110,7 +120,7 @@ const userOptions = [
         :width="260"
         content-class="flex flex-col z-40"
       >
-        <NFlex vertical justify="space-between" class="h-full">
+        <NFlex vertical justify="space-between" class="h-full relative">
           <NSpace vertical>
             <div class="pl-4 pr-8 pt-6">
               <NuxtLink :to="{ name: 'index' }">
@@ -146,9 +156,10 @@ const userOptions = [
               :value="activeRoute"
             />
           </NSpace>
-          <!--          <NSpace vertical class="p-8"> -->
-          <!--            <NaiveColorModeSwitch :text="false" secondary icon-light="tabler:sun" icon-dark="tabler:moon" icon-system="tabler:device-desktop" /> -->
-          <!--          </NSpace> -->
+          <NSpace vertical>
+            <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" src="/img/character.svg" />
+            <NImage v-if="heartView" :preview-disabled="true" src="/img/heart-main.svg" class="absolute bottom-[15%] px-6" />
+          </NSpace>
         </NFlex>
       </NLayoutSider>
       <NLayout class="w-full mx-2 mr-4 max-h-screen z-50 bg-transparent">
