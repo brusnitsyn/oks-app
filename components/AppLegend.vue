@@ -19,7 +19,7 @@
     <NSpace align="center">
       <div class="h-[34px] w-[50px] rounded flex flex-col justify-center items-center border-4 bg-green-300 border-red-700" />
       <span>
-        &ndash; Вызов СМП / Вызов врача на дом
+        &ndash; Вызов СМП
       </span>
     </NSpace>
     <NSpace align="center">

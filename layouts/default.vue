@@ -157,7 +157,7 @@ const userOptions = [
             />
           </NSpace>
           <NSpace vertical>
-            <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" src="/img/character.svg" />
+            <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" src="/img/woman.svg" />
             <NImage v-if="heartView" :preview-disabled="true" src="/img/heart-main.svg" class="absolute bottom-[15%] px-6" />
           </NSpace>
         </NFlex>
