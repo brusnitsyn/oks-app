@@ -174,6 +174,14 @@ definePageMeta({
                     </NGi>
                   </NGrid>
                 </NListItem>
+                <NListItem>
+                  <NGrid :cols="2">
+                    <NGi><NText>Дополнительный номер телефона</NText></NGi>
+                    <NGi v-if="pacient.data.dop_tel">
+                      <NText>{{ pacient.data.dop_tel }}</NText>
+                    </NGi>
+                  </NGrid>
+                </NListItem>
               </NList>
             </NCard>
 
@@ -256,6 +264,19 @@ definePageMeta({
                     </NGi>
                   </NGrid>
                 </NListItem>
+                <NListItem>
+                  <NGrid :cols="2">
+                    <NGi><NText>Лекарственные препараты выданы на срок</NText></NGi>
+                    <NGi>
+                      <NSpace vertical :size="0">
+                        <NText v-if="pacient.data.disp.lek_period">{{ pacient.data.disp.lek_period }}</NText>
+                        <NText v-else>
+                          —
+                        </NText>
+                      </NSpace>
+                    </NGi>
+                  </NGrid>
+                </NListItem>
               </NList>
             </NCard>
           </NSpace>
@@ -311,7 +332,7 @@ definePageMeta({
                         </NText>
                       </NGridItem>
                       <NGridItem class="flex items-center justify-end" align="end">
-                        <NButton v-if="(cp.call == null || useSanctumAuth().isAdmin)" text @click="showControlPointCall(cp.control_point.id)">
+                        <NButton v-if="useSanctumAuth().isOperator || useSanctumAuth().isAdmin" text @click="showControlPointCall(cp.control_point.id)">
                           <template #icon>
                             <IconEdit />
                           </template>

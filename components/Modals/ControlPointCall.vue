@@ -244,7 +244,7 @@ function handleClose() {
 <template>
   <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md" :title="controlPoint.data.control_point.point">
     <NSpace vertical :size="16">
-      <NForm ref="formRef" :disabled="controlPoint.data.call !== {} && !useSanctumAuth().isAdmin" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
+      <NForm ref="formRef" :disabled="controlPoint.data.control_point.controled_at !== null && (!useSanctumAuth().isAdmin)" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
         <NGrid cols="2" x-gap="8">
           <NFormItemGi label="Результат дозвона" path="call.result_call_id">
             <SelectResultCall
@@ -269,7 +269,7 @@ function handleClose() {
                           <NText class="font-medium">
                             {{ index + 1 }}. {{ question.question }}
                           </NText>
-                          <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="model.control_point.control_point_option_id === 1 || question.disabled" :name="question.question" @update:value="answerId => onCheckBriefAnswer(chapter.id, answerId, question)">
+                          <NRadioGroup v-model:value="model.call.brief_answers[question.id]" :disabled="controlPoint.data.control_point.controled_at !== null && !useSanctumAuth().isAdmin || (model.control_point.control_point_option_id === 1 || question.disabled)" :name="question.question" @update:value="answerId => onCheckBriefAnswer(chapter.id, answerId, question)">
                             <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                           </NRadioGroup>
                         </NSpace>
@@ -293,7 +293,7 @@ function handleClose() {
       </NForm>
     </NSpace>
 
-    <template v-if="controlPoint.data.call === {} || useSanctumAuth().isAdmin" #action>
+    <template v-if="controlPoint.data.control_point.controled_at === null || useSanctumAuth().isAdmin" #action>
       <NFlex justify="space-between" align="center">
         <NButton secondary @click="handleClose">
           Отмена

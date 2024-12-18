@@ -139,6 +139,18 @@ rules.value = {
         trigger: ['blur', 'change']
       }
     ],
+    lek_period_id: [
+      {
+        type: 'number',
+        validator(rule, value) {
+          if (model.value.disp.lek_pr_state_id === 1 && typeof value === 'undefined') {
+            return new Error('Это поле обязательно для заполнения!')
+          }
+          return true
+        },
+        trigger: ['blur', 'change']
+      }
+    ],
     disp_dop_health_id: [
       {
         type: 'number',
@@ -304,6 +316,9 @@ function handleClose() {
             </NFormItemGi>
             <NFormItemGi label="Лекарственные препараты" path="disp.lek_pr_state_id">
               <SelectLekPrState v-model:value="model.disp.lek_pr_state_id" />
+            </NFormItemGi>
+            <NFormItemGi :show-require-mark="model.disp.lek_pr_state_id === 1" label="Лекарственные препараты выданы на срок" path="disp.lek_period_id" >
+              <SelectLekPeriod v-model:value="model.disp.lek_period_id" :disabled="model.disp.lek_pr_state_id !== 1" />
             </NFormItemGi>
             <NFormItemGi label="Необходимость дополнительного лечения" path="disp.disp_dop_health_id">
               <SelectDispDopHeal v-model:value="model.disp.disp_dop_health_id" />
