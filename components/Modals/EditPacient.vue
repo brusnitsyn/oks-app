@@ -228,7 +228,6 @@ function handleClose() {
                 v-model:value="model.birth_at"
               />
             </NFormItemGi>
-            <NFormItemGi />
             <NFormItemGi label="Дата поступления в стационар" path="receipt_at">
               <SelectDatePicker
                 v-model:value="model.receipt_at"

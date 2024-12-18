@@ -2,7 +2,6 @@
 import {
   IconChevronLeft,
   IconEdit,
-  IconSquareRoundedPlus,
 } from '@tabler/icons-vue'
 import { format } from 'date-fns'
 import { NIcon } from 'naive-ui'
@@ -133,7 +132,7 @@ definePageMeta({
                   <NText class="text-lg font-bold">
                     {{ pacient.data.fio }}
                   </NText>
-                  <NButton type="error" @click="onDeletePatient">
+                  <NButton v-if="useSanctumAuth().isAdmin" type="error" @click="onDeletePatient">
                     Удалить из регистра
                   </NButton>
                 </NFlex>
@@ -269,7 +268,9 @@ definePageMeta({
                     <NGi><NText>Лекарственные препараты выданы на срок</NText></NGi>
                     <NGi>
                       <NSpace vertical :size="0">
-                        <NText v-if="pacient.data.disp.lek_period">{{ pacient.data.disp.lek_period }}</NText>
+                        <NText v-if="pacient.data.disp.lek_period">
+                          {{ pacient.data.disp.lek_period }}
+                        </NText>
                         <NText v-else>
                           —
                         </NText>
@@ -284,14 +285,14 @@ definePageMeta({
         <NGi span="m:5 l:2">
           <NSpace vertical :size="16">
             <NCard title="История диспансерных наблюдений" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-<!--              <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra>-->
-<!--                <NButton text @click="showAddDisp = true">-->
-<!--                  <template #icon>-->
-<!--                    <IconSquareRoundedPlus />-->
-<!--                  </template>-->
-<!--                  Добавить-->
-<!--                </NButton>-->
-<!--              </template>-->
+              <!--              <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra> -->
+              <!--                <NButton text @click="showAddDisp = true"> -->
+              <!--                  <template #icon> -->
+              <!--                    <IconSquareRoundedPlus /> -->
+              <!--                  </template> -->
+              <!--                  Добавить -->
+              <!--                </NButton> -->
+              <!--              </template> -->
               <NList v-if="pacient.data.disps && pacient.data.disps.length">
                 <NScrollbar class="max-h-[360px]">
                   <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
