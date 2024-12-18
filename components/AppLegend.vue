@@ -13,7 +13,7 @@
     <NSpace align="center">
       <div class="h-[34px] w-[50px] rounded flex flex-col justify-center items-center border-4 bg-green-300 border-cyan-500" />
       <span>
-        &ndash; Требуется косультация
+        &ndash; Требуется консультация
       </span>
     </NSpace>
     <NSpace align="center">

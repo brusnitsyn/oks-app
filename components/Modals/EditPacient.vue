@@ -38,6 +38,14 @@ rules.value = {
       trigger: ['blur', 'input']
     },
   ],
+  dop_tel: [
+    {
+      min: 18,
+      required: true,
+      message: 'Это поле обязательно для заполнения!',
+      trigger: ['blur', 'input']
+    },
+  ],
   birth_at: [
     {
       required: true,
@@ -211,6 +219,9 @@ function handleClose() {
             </NFormItemGi>
             <NFormItemGi label="Номер телефона" path="tel">
               <InputTel v-model:value="model.tel" />
+            </NFormItemGi>
+            <NFormItemGi label="Дополнительный номер телефона" path="dop_tel">
+              <InputTel v-model:value="model.dop_tel" />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
               <SelectDatePicker

@@ -90,6 +90,16 @@ function showOlderDisp(dispid) {
   olderDisp.value = true
 }
 
+async function onDeletePatient() {
+  const { status } = await useAPI(`/api/pacient/${id}`, {
+    method: 'DELETE'
+  })
+
+  if (status.value === 'success') {
+    navigateTo('/pacient')
+  }
+}
+
 const showAddDisp = ref(false)
 
 useSeoMeta({
@@ -119,9 +129,14 @@ definePageMeta({
                     <NIcon :component="IconChevronLeft" />
                   </template>
                 </NButton>
-                <NText class="text-lg font-bold">
-                  {{ pacient.data.fio }}
-                </NText>
+                <NFlex justify="space-between" align="center">
+                  <NText class="text-lg font-bold">
+                    {{ pacient.data.fio }}
+                  </NText>
+                  <NButton type="error" @click="onDeletePatient">
+                    Удалить из регистра
+                  </NButton>
+                </NFlex>
               </template>
             </NCard>
 
@@ -162,11 +177,37 @@ definePageMeta({
               </NList>
             </NCard>
 
-            <NCard v-if="pacient.data.disp != null" title="Текущее диспансерное наблюдение" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
+            <NCard v-if="pacient.data.disp != null" title="Информация по заболеванию" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
               <NList hoverable>
                 <NListItem>
                   <NGrid :cols="2">
-                    <NGi><NText>Дата поступления</NText></NGi>
+                    <NGi><NText>Дата поступления в стационар</NText></NGi>
+                    <NGi>
+                      <NText v-if="pacient.data.receipt_at">
+                        {{ format(pacient.data.receipt_at, 'dd.MM.yyyy') }}
+                      </NText>
+                      <NText v-else>
+                        —
+                      </NText>
+                    </NGi>
+                  </NGrid>
+                </NListItem>
+                <NListItem>
+                  <NGrid :cols="2">
+                    <NGi><NText>Дата выписки из стационара</NText></NGi>
+                    <NGi>
+                      <NText v-if="pacient.data.discharge_at">
+                        {{ format(pacient.data.discharge_at, 'dd.MM.yyyy') }}
+                      </NText>
+                      <NText v-else>
+                        —
+                      </NText>
+                    </NGi>
+                  </NGrid>
+                </NListItem>
+                <NListItem>
+                  <NGrid :cols="2">
+                    <NGi><NText>Дата взятия на диспансерный учет</NText></NGi>
                     <NGi>
                       <NText v-if="pacient.data.disp.begin_at">
                         {{ format(pacient.data.disp.begin_at, 'dd.MM.yyyy') }}
@@ -221,15 +262,15 @@ definePageMeta({
         </NGi>
         <NGi span="m:5 l:2">
           <NSpace vertical :size="16">
-            <NCard title="Диспансерные наблюдения" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-              <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra>
-                <NButton text @click="showAddDisp = true">
-                  <template #icon>
-                    <IconSquareRoundedPlus />
-                  </template>
-                  Добавить
-                </NButton>
-              </template>
+            <NCard title="История диспансерных наблюдений" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
+<!--              <template v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" #header-extra>-->
+<!--                <NButton text @click="showAddDisp = true">-->
+<!--                  <template #icon>-->
+<!--                    <IconSquareRoundedPlus />-->
+<!--                  </template>-->
+<!--                  Добавить-->
+<!--                </NButton>-->
+<!--              </template>-->
               <NList v-if="pacient.data.disps && pacient.data.disps.length">
                 <NScrollbar class="max-h-[360px]">
                   <NListItem v-for="disp in pacient.data.disps" :key="disp.id">
@@ -248,10 +289,10 @@ definePageMeta({
                   </NListItem>
                 </NScrollbar>
               </NList>
-              <NEmpty v-else description="Диспансерных наблюдений нет" class="pt-5 pb-4">
+              <NEmpty v-else description="В истории диспансерных наблюдений пусто" class="pt-5 pb-4">
                 <template #extra>
                   <NButton v-if="useSanctumAuth().isAdmin || useSanctumAuth().isDoctor" size="small" @click="showAddDisp = true">
-                    Добавить наблюдение
+                    Добавить новое наблюдение
                   </NButton>
                 </template>
               </NEmpty>

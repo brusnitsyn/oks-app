@@ -9,17 +9,38 @@ const model = ref({
 const { pending, rules, reset, onSubmit, edited, apiErrors, formRef } = useNaiveForm(model)
 
 rules.value = {
-  fio: [
+  // fio: [
+  //   {
+  //     required: true,
+  //     message: 'ФИО обязательно!',
+  //     trigger: ['blur', 'input']
+  //   }
+  // ],
+  family: [
     {
       required: true,
-      message: 'ФИО обязательно!',
+      message: 'Это поле обязательно для заполнения!',
+      trigger: ['blur', 'input']
+    }
+  ],
+  name: [
+    {
+      required: true,
+      message: 'Это поле обязательно для заполнения!',
+      trigger: ['blur', 'input']
+    }
+  ],
+  ot: [
+    {
+      required: true,
+      message: 'Это поле обязательно для заполнения!',
       trigger: ['blur', 'input']
     }
   ],
   snils: [
     {
       required: true,
-      message: 'СНИЛС обязателен!',
+      message: 'Это поле обязательно для заполнения!',
       trigger: ['blur', 'input']
     },
     {
@@ -32,7 +53,15 @@ rules.value = {
     {
       min: 18,
       required: true,
-      message: 'Номер телефона обязателен!',
+      message: 'Это поле обязательно для заполнения!',
+      trigger: ['blur', 'input']
+    },
+  ],
+  dop_tel: [
+    {
+      min: 18,
+      required: true,
+      message: 'Это поле обязательно для заполнения!',
       trigger: ['blur', 'input']
     },
   ],
@@ -41,7 +70,7 @@ rules.value = {
       required: true,
       validator(rule, value) {
         if (!value) {
-          return new Error('Дата рождения обязательна!')
+          return new Error('Это поле обязательно для заполнения!')
         }
       },
       trigger: ['blur', 'input']
@@ -52,7 +81,7 @@ rules.value = {
       required: true,
       validator(rule, value) {
         if (!value) {
-          return new Error('Дата поступления обязательна!')
+          return new Error('Это поле обязательно для заполнения!')
         }
       },
       trigger: ['blur', 'input']
@@ -63,7 +92,7 @@ rules.value = {
       required: true,
       validator(rule, value) {
         if (!value) {
-          return new Error('Дата выписки обязательна!')
+          return new Error('Это поле обязательно для заполнения!')
         }
       },
       trigger: ['blur', 'input']
@@ -73,7 +102,7 @@ rules.value = {
     {
       type: 'number',
       required: true,
-      message: 'ЛПУ обязательно!',
+      message: 'Это поле обязательно для заполнения!',
       trigger: ['blur', 'change']
     }
   ],
@@ -82,7 +111,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Основной диагноз обязателен!',
+        message: 'Это поле обязательно для заполнения!',
         trigger: ['blur', 'change']
       }
     ],
@@ -106,7 +135,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Лекарственные препараты обязательны!',
+        message: 'Это поле обязательно для заполнения!',
         trigger: ['blur', 'change']
       }
     ],
@@ -114,7 +143,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Дополнительное лечение обязательно!',
+        message: 'Это поле обязательно для заполнения!',
         trigger: ['blur', 'change']
       }
     ],
@@ -122,7 +151,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Причина выбытия из регистра обязательна!',
+        message: 'Это поле обязательно для заполнения!',
         trigger: ['blur', 'change']
       }
     ],
@@ -130,7 +159,7 @@ rules.value = {
       {
         type: 'number',
         required: true,
-        message: 'Статус обязателен!',
+        message: 'Это поле обязательно для заполнения!',
         trigger: ['blur', 'change']
       }
     ],
@@ -139,7 +168,7 @@ rules.value = {
         required: true,
         validator(rule, value) {
           if (!value) {
-            return new Error('Дата поступления на учет обязательна!')
+            return new Error('Это поле обязательно для заполнения!')
           }
         },
         trigger: ['blur', 'input']
@@ -150,7 +179,7 @@ rules.value = {
         required: true,
         validator(rule, value) {
           if (!value) {
-            return new Error('Дата выбытия из регистра обязательна!')
+            return new Error('Это поле обязательно для заполнения!')
           }
         },
         trigger: ['blur', 'input']
@@ -180,7 +209,7 @@ function handleSubmit() {
     }
   })
 }
-
+const activeTab = ref('info')
 function handleClose() {
   show.value = false
   reset()
@@ -189,18 +218,36 @@ function handleClose() {
 
 <template>
   <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md min-h-[742px]" title="Добавление пациента">
-    <NForm ref="formRef" :rules="rules" :model="model" @submit.prevent="() => onSubmit(handleSubmit)">
-      <NTabs type="segment">
-        <NTabPane display-directive="show" name="info" tab="Персональная информация">
-          <NGrid cols="2" x-gap="8">
-            <NFormItemGi label="ЛПУ" path="lpu_id">
+    <NForm ref="formRef" :rules="rules" :model="model" class="h-full" @submit.prevent="() => onSubmit(handleSubmit)">
+      <NTabs v-model:value="activeTab" type="segment" class="h-full">
+        <NTabPane display-directive="show" class="h-full" name="info" tab="Персональная информация">
+          <NGrid cols="3" x-gap="8">
+            <NFormItemGi span="3" label="ЛПУ" path="lpu_id">
               <SelectLpu
                 v-model:value="model.lpu_id"
               />
             </NFormItemGi>
-            <NFormItemGi label="ФИО" path="fio">
+            <!--            <NFormItemGi label="ФИО" path="fio"> -->
+            <!--              <NInput -->
+            <!--                v-model:value="model.fio" -->
+            <!--                placeholder="" -->
+            <!--              /> -->
+            <!--            </NFormItemGi> -->
+            <NFormItemGi label="Фамилия" path="family">
               <NInput
-                v-model:value="model.fio"
+                v-model:value="model.family"
+                placeholder=""
+              />
+            </NFormItemGi>
+            <NFormItemGi label="Имя" path="name">
+              <NInput
+                v-model:value="model.name"
+                placeholder=""
+              />
+            </NFormItemGi>
+            <NFormItemGi label="Отчество" path="ot">
+              <NInput
+                v-model:value="model.ot"
                 placeholder=""
               />
             </NFormItemGi>
@@ -209,6 +256,9 @@ function handleClose() {
             </NFormItemGi>
             <NFormItemGi label="Номер телефона" path="tel">
               <InputTel v-model:value="model.tel" />
+            </NFormItemGi>
+            <NFormItemGi label="Дополнительный номер телефона" path="dop_tel">
+              <InputTel v-model:value="model.dop_tel" />
             </NFormItemGi>
             <NFormItemGi label="Дата рождения" path="birth_at">
               <SelectDatePicker
@@ -242,7 +292,7 @@ function handleClose() {
             <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
               <SelectDiagnosComplication v-model:value="model.disp.complications_id" />
             </NFormItemGi>
-            <NFormItemGi label="Статус" path="disp.disp_state_id">
+            <NFormItemGi label="Диспансерный учет" path="disp.disp_state_id">
               <SelectDispStatus
                 v-model:value="model.disp.disp_state_id"
               />
@@ -273,13 +323,12 @@ function handleClose() {
         </NTabPane>
       </NTabs>
     </NForm>
-
     <template #action>
       <NFlex justify="space-between" align="center">
         <NButton secondary @click="handleClose">
           Отмена
         </NButton>
-        <NButton type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
+        <NButton v-if="activeTab === 'disp'" type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
           Добавить пациента
         </NButton>
       </NFlex>
