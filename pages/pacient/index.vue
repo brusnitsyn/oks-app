@@ -469,7 +469,7 @@ async function searchPacient() {
 }
 
 function rowProps(row: Person) {
-  if (row.disp_status_id === 2) { return { class: '!bg-gray-200' } }
+  if (row.deleted_at != null) { return { class: '!bg-gray-200' } }
   // console.log(row)
   // if (row.certificate.has_valid === false) { return { style: `background-color: ${changeColor(useThemeVars().value.errorColor, { alpha: 0.35 })} !important;` } }
   // if (row.certificate.has_request_new === true) { return { style: `background-color: ${changeColor(useThemeVars().value.warningColor, { alpha: 0.35 })} !important;` } }

@@ -285,7 +285,7 @@ function handleClose() {
             <NInput
               v-model:value="model.call.info"
               type="textarea"
-              :autosize="{ minRows: 6, maxRows: 6 }"
+              :autosize="{ minRows: 4, maxRows: 4 }"
               placeholder=""
             />
           </NFormItemGi>

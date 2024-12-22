@@ -3,7 +3,7 @@ const props = defineProps(['refresh'])
 const emits = defineEmits('createdIntegrate')
 const show = defineModel('show')
 const model = ref({
-  disp: {}
+  info: {}
 })
 
 const { pending, rules, reset, onSubmit, edited, apiErrors, formRef } = useNaiveForm(model)
@@ -76,37 +76,37 @@ rules.value = {
       trigger: ['blur', 'input']
     }
   ],
-  receipt_at: [
-    {
-      required: true,
-      validator(rule, value) {
-        if (!value) {
-          return new Error('Это поле обязательно для заполнения!')
-        }
-      },
-      trigger: ['blur', 'input']
-    }
-  ],
-  discharge_at: [
-    {
-      required: true,
-      validator(rule, value) {
-        if (!value) {
-          return new Error('Это поле обязательно для заполнения!')
-        }
-      },
-      trigger: ['blur', 'input']
-    }
-  ],
-  lpu_id: [
-    {
-      type: 'number',
-      required: true,
-      message: 'Это поле обязательно для заполнения!',
-      trigger: ['blur', 'change']
-    }
-  ],
-  disp: {
+  info: {
+    stt_receipt_at: [
+      {
+        required: true,
+        validator(rule, value) {
+          if (!value) {
+            return new Error('Это поле обязательно для заполнения!')
+          }
+        },
+        trigger: ['blur', 'input']
+      }
+    ],
+    stt_discharge_at: [
+      {
+        required: true,
+        validator(rule, value) {
+          if (!value) {
+            return new Error('Это поле обязательно для заполнения!')
+          }
+        },
+        trigger: ['blur', 'input']
+      }
+    ],
+    lpu_id: [
+      {
+        type: 'number',
+        required: true,
+        message: 'Это поле обязательно для заполнения!',
+        trigger: ['blur', 'change']
+      }
+    ],
     main_diagnos_id: [
       {
         type: 'number',
@@ -143,7 +143,7 @@ rules.value = {
       {
         type: 'number',
         validator(rule, value) {
-          if (model.value.disp.lek_pr_state_id === 1 && typeof value === 'undefined') {
+          if (model.value.info.lek_pr_state_id === 1 && typeof value === 'undefined') {
             return new Error('Это поле обязательно для заполнения!')
           }
           return true
@@ -221,7 +221,7 @@ function handleSubmit() {
     }
   })
 }
-const activeTab = ref('info')
+const activeTab = ref('patient')
 function handleClose() {
   show.value = false
   reset()
@@ -232,11 +232,11 @@ function handleClose() {
   <NModal v-model:show="show" :mask-closable="false" preset="card" class="max-w-screen-sm xl:max-w-screen-md min-h-[742px]" title="Добавление пациента">
     <NForm ref="formRef" :rules="rules" :model="model" class="h-full" @submit.prevent="() => onSubmit(handleSubmit)">
       <NTabs v-model:value="activeTab" type="segment" class="h-full">
-        <NTabPane display-directive="show" class="h-full" name="info" tab="Персональная информация">
+        <NTabPane display-directive="show" class="h-full" name="patient" tab="Персональная информация">
           <NGrid cols="3" x-gap="8">
-            <NFormItemGi span="3" label="ЛПУ" path="lpu_id">
+            <NFormItemGi span="3" label="ЛПУ" path="info.lpu_id">
               <SelectLpu
-                v-model:value="model.lpu_id"
+                v-model:value="model.info.lpu_id"
               />
             </NFormItemGi>
             <!--            <NFormItemGi label="ФИО" path="fio"> -->
@@ -277,63 +277,63 @@ function handleClose() {
                 v-model:value="model.birth_at"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата поступления в стационар" path="receipt_at">
+            <NFormItemGi label="Дата поступления в стационар" path="info.stt_receipt_at">
               <SelectDatePicker
-                v-model:value="model.receipt_at"
+                v-model:value="model.info.stt_receipt_at"
               />
             </NFormItemGi>
-            <NFormItemGi label="Дата выписки из стационара" path="discharge_at">
+            <NFormItemGi label="Дата выписки из стационара" path="info.stt_discharge_at">
               <SelectDatePicker
-                v-model:value="model.discharge_at"
+                v-model:value="model.info.stt_discharge_at"
               />
             </NFormItemGi>
           </NGrid>
         </NTabPane>
-        <NTabPane display-directive="show" name="disp" tab="Информация по заболеванию">
+        <NTabPane display-directive="show" name="info" tab="Информация по заболеванию">
           <NGrid cols="2" x-gap="8">
-            <NFormItemGi span="2" label="Основной диагноз" path="disp.main_diagnos_id">
+            <NFormItemGi span="2" label="Основной диагноз" path="info.main_diagnos_id">
               <SelectDiagnosMain
-                v-model:value="model.disp.main_diagnos_id"
+                v-model:value="model.info.main_diagnos_id"
               />
             </NFormItemGi>
-            <NFormItemGi span="2" label="Сопутствующий диагноз" path="disp.conco_diagnos_id">
+            <NFormItemGi span="2" label="Сопутствующий диагноз" path="info.conco_diagnos_id">
               <SelectDiagnosConco
-                v-model:value="model.disp.conco_diagnos_id"
+                v-model:value="model.info.conco_diagnos_id"
               />
             </NFormItemGi>
-            <NFormItemGi span="2" label="Осложнения" path="disp.complications_id">
-              <SelectDiagnosComplication v-model:value="model.disp.complications_id" />
+            <NFormItemGi span="2" label="Осложнения" path="info.complications_id">
+              <SelectDiagnosComplication v-model:value="model.info.complications_id" />
             </NFormItemGi>
-            <NFormItemGi label="Диспансерный учет" path="disp.disp_state_id">
-              <SelectDispStatus
-                v-model:value="model.disp.disp_state_id"
-              />
+<!--            <NFormItemGi label="Диспансерный учет" path="disp.disp_state_id">-->
+<!--              <SelectDispStatus-->
+<!--                v-model:value="model.disp.disp_state_id"-->
+<!--              />-->
+<!--            </NFormItemGi>-->
+<!--            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата постановки на диспансерный учет" path="disp.begin_at">-->
+<!--              <SelectDatePicker-->
+<!--                v-model:value="model.disp.begin_at"-->
+<!--              />-->
+<!--            </NFormItemGi>-->
+            <NFormItemGi label="Лекарственные препараты" path="info.lek_pr_state_id">
+              <SelectLekPrState v-model:value="model.info.lek_pr_state_id" />
             </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 1" label="Дата постановки на диспансерный учет" path="disp.begin_at">
-              <SelectDatePicker
-                v-model:value="model.disp.begin_at"
-              />
+            <NFormItemGi :show-require-mark="model.info.lek_pr_state_id === 1" label="Лекарственные препараты выданы на срок" path="info.lek_period_id" >
+              <SelectLekPeriod v-model:value="model.info.lek_period_id" :disabled="model.info.lek_pr_state_id !== 1" />
             </NFormItemGi>
-            <NFormItemGi label="Лекарственные препараты" path="disp.lek_pr_state_id">
-              <SelectLekPrState v-model:value="model.disp.lek_pr_state_id" />
-            </NFormItemGi>
-            <NFormItemGi :show-require-mark="model.disp.lek_pr_state_id === 1" label="Лекарственные препараты выданы на срок" path="disp.lek_period_id" >
-              <SelectLekPeriod v-model:value="model.disp.lek_period_id" :disabled="model.disp.lek_pr_state_id !== 1" />
-            </NFormItemGi>
-            <NFormItemGi label="Необходимость дополнительного лечения" path="disp.disp_dop_health_id">
-              <SelectDispDopHeal v-model:value="model.disp.disp_dop_health_id" />
+            <NFormItemGi label="Необходимость дополнительного лечения" path="info.disp_dop_health_id">
+              <SelectDispDopHeal v-model:value="model.info.disp_dop_health_id" />
             </NFormItemGi>
             <NFormItemGi />
-            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата выбытия из регистра" path="disp.end_at">
-              <SelectDatePicker
-                v-model:value="model.disp.end_at"
-              />
-            </NFormItemGi>
-            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина выбытия из регистра" path="disp.disp_reason_close_id">
-              <SelectReasonClose
-                v-model:value="model.disp.disp_reason_close_id"
-              />
-            </NFormItemGi>
+<!--            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Дата выбытия из регистра" path="disp.end_at">-->
+<!--              <SelectDatePicker-->
+<!--                v-model:value="model.disp.end_at"-->
+<!--              />-->
+<!--            </NFormItemGi>-->
+<!--            <NFormItemGi v-if="model.disp.disp_state_id === 2" label="Причина выбытия из регистра" path="disp.disp_reason_close_id">-->
+<!--              <SelectReasonClose-->
+<!--                v-model:value="model.disp.disp_reason_close_id"-->
+<!--              />-->
+<!--            </NFormItemGi>-->
           </NGrid>
         </NTabPane>
       </NTabs>
@@ -343,7 +343,7 @@ function handleClose() {
         <NButton secondary @click="handleClose">
           Отмена
         </NButton>
-        <NButton v-if="activeTab === 'disp'" type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
+        <NButton v-if="activeTab === 'info'" type="primary" :loading="loading" :disabled="loading || !edited" attr-type="submit" @click="handleSubmit">
           Добавить пациента
         </NButton>
       </NFlex>
